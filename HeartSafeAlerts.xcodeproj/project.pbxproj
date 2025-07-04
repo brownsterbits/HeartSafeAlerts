@@ -1,0 +1,615 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6F2859B32E163C0B00C15C58 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F2859B22E163C0B00C15C58 /* StoreKit.framework */; };
+		6F2859B92E164B5300C15C58 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6F2859B82E164B5300C15C58 /* Configuration.storekit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6FD006842E0CD5BC00504F55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FD0066E2E0CD5BB00504F55 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FD006752E0CD5BB00504F55;
+			remoteInfo = HeartSafeAlerts;
+		};
+		6FD0068E2E0CD5BC00504F55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FD0066E2E0CD5BB00504F55 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FD006752E0CD5BB00504F55;
+			remoteInfo = HeartSafeAlerts;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		6F2859B22E163C0B00C15C58 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		6F2859B82E164B5300C15C58 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
+		6FD006762E0CD5BB00504F55 /* HeartSafeAlerts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeartSafeAlerts.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FD006832E0CD5BC00504F55 /* HeartSafeAlertsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HeartSafeAlertsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FD0068D2E0CD5BC00504F55 /* HeartSafeAlertsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HeartSafeAlertsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6FD006CF2E0D0FBA00504F55 /* Exceptions for "HeartSafeAlerts" folder in "HeartSafeAlerts" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6FD006752E0CD5BB00504F55 /* HeartSafeAlerts */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		6FD006782E0CD5BB00504F55 /* HeartSafeAlerts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6FD006CF2E0D0FBA00504F55 /* Exceptions for "HeartSafeAlerts" folder in "HeartSafeAlerts" target */,
+			);
+			path = HeartSafeAlerts;
+			sourceTree = "<group>";
+		};
+		6FD006862E0CD5BC00504F55 /* HeartSafeAlertsTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = HeartSafeAlertsTests;
+			sourceTree = "<group>";
+		};
+		6FD006902E0CD5BC00504F55 /* HeartSafeAlertsUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = HeartSafeAlertsUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6FD006732E0CD5BB00504F55 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F2859B32E163C0B00C15C58 /* StoreKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FD006802E0CD5BC00504F55 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FD0068A2E0CD5BC00504F55 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6F2859B12E163C0B00C15C58 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6F2859B22E163C0B00C15C58 /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6FD0066D2E0CD5BB00504F55 = {
+			isa = PBXGroup;
+			children = (
+				6F2859B82E164B5300C15C58 /* Configuration.storekit */,
+				6FD006782E0CD5BB00504F55 /* HeartSafeAlerts */,
+				6FD006862E0CD5BC00504F55 /* HeartSafeAlertsTests */,
+				6FD006902E0CD5BC00504F55 /* HeartSafeAlertsUITests */,
+				6F2859B12E163C0B00C15C58 /* Frameworks */,
+				6FD006772E0CD5BB00504F55 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6FD006772E0CD5BB00504F55 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6FD006762E0CD5BB00504F55 /* HeartSafeAlerts.app */,
+				6FD006832E0CD5BC00504F55 /* HeartSafeAlertsTests.xctest */,
+				6FD0068D2E0CD5BC00504F55 /* HeartSafeAlertsUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6FD006752E0CD5BB00504F55 /* HeartSafeAlerts */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FD006972E0CD5BC00504F55 /* Build configuration list for PBXNativeTarget "HeartSafeAlerts" */;
+			buildPhases = (
+				6FD006722E0CD5BB00504F55 /* Sources */,
+				6FD006732E0CD5BB00504F55 /* Frameworks */,
+				6FD006742E0CD5BB00504F55 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				6FD006782E0CD5BB00504F55 /* HeartSafeAlerts */,
+			);
+			name = HeartSafeAlerts;
+			packageProductDependencies = (
+			);
+			productName = HeartSafeAlerts;
+			productReference = 6FD006762E0CD5BB00504F55 /* HeartSafeAlerts.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6FD006822E0CD5BC00504F55 /* HeartSafeAlertsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FD0069A2E0CD5BC00504F55 /* Build configuration list for PBXNativeTarget "HeartSafeAlertsTests" */;
+			buildPhases = (
+				6FD0067F2E0CD5BC00504F55 /* Sources */,
+				6FD006802E0CD5BC00504F55 /* Frameworks */,
+				6FD006812E0CD5BC00504F55 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6FD006852E0CD5BC00504F55 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6FD006862E0CD5BC00504F55 /* HeartSafeAlertsTests */,
+			);
+			name = HeartSafeAlertsTests;
+			packageProductDependencies = (
+			);
+			productName = HeartSafeAlertsTests;
+			productReference = 6FD006832E0CD5BC00504F55 /* HeartSafeAlertsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		6FD0068C2E0CD5BC00504F55 /* HeartSafeAlertsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FD0069D2E0CD5BC00504F55 /* Build configuration list for PBXNativeTarget "HeartSafeAlertsUITests" */;
+			buildPhases = (
+				6FD006892E0CD5BC00504F55 /* Sources */,
+				6FD0068A2E0CD5BC00504F55 /* Frameworks */,
+				6FD0068B2E0CD5BC00504F55 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6FD0068F2E0CD5BC00504F55 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6FD006902E0CD5BC00504F55 /* HeartSafeAlertsUITests */,
+			);
+			name = HeartSafeAlertsUITests;
+			packageProductDependencies = (
+			);
+			productName = HeartSafeAlertsUITests;
+			productReference = 6FD0068D2E0CD5BC00504F55 /* HeartSafeAlertsUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6FD0066E2E0CD5BB00504F55 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					6FD006752E0CD5BB00504F55 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					6FD006822E0CD5BC00504F55 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 6FD006752E0CD5BB00504F55;
+					};
+					6FD0068C2E0CD5BC00504F55 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 6FD006752E0CD5BB00504F55;
+					};
+				};
+			};
+			buildConfigurationList = 6FD006712E0CD5BB00504F55 /* Build configuration list for PBXProject "HeartSafeAlerts" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6FD0066D2E0CD5BB00504F55;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 6FD006772E0CD5BB00504F55 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6FD006752E0CD5BB00504F55 /* HeartSafeAlerts */,
+				6FD006822E0CD5BC00504F55 /* HeartSafeAlertsTests */,
+				6FD0068C2E0CD5BC00504F55 /* HeartSafeAlertsUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6FD006742E0CD5BB00504F55 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F2859B92E164B5300C15C58 /* Configuration.storekit in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FD006812E0CD5BC00504F55 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FD0068B2E0CD5BC00504F55 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6FD006722E0CD5BB00504F55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FD0067F2E0CD5BC00504F55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FD006892E0CD5BC00504F55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6FD006852E0CD5BC00504F55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FD006752E0CD5BB00504F55 /* HeartSafeAlerts */;
+			targetProxy = 6FD006842E0CD5BC00504F55 /* PBXContainerItemProxy */;
+		};
+		6FD0068F2E0CD5BC00504F55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FD006752E0CD5BB00504F55 /* HeartSafeAlerts */;
+			targetProxy = 6FD0068E2E0CD5BC00504F55 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		6FD006952E0CD5BC00504F55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 959KDL6FWJ;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		6FD006962E0CD5BC00504F55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 959KDL6FWJ;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6FD006982E0CD5BC00504F55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1900;
+				DEVELOPMENT_TEAM = 6VM5W2W65K;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HeartSafeAlerts/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Heart Alerts";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Heart Alerts needs Bluetooth access to continuously monitor your heart rate and alert you if it goes outside your safe range, even when the app is in the background.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Heart Alerts needs Bluetooth access to connect to your heart rate monitor.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brownster.HeartSafeAlerts;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		6FD006992E0CD5BC00504F55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1900;
+				DEVELOPMENT_TEAM = 6VM5W2W65K;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HeartSafeAlerts/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Heart Alerts";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Heart Alerts needs Bluetooth access to continuously monitor your heart rate and alert you if it goes outside your safe range, even when the app is in the background.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Heart Alerts needs Bluetooth access to connect to your heart rate monitor.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brownster.HeartSafeAlerts;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		6FD0069B2E0CD5BC00504F55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 959KDL6FWJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brownster.HeartSafeAlertsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HeartSafeAlerts.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HeartSafeAlerts";
+			};
+			name = Debug;
+		};
+		6FD0069C2E0CD5BC00504F55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 959KDL6FWJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brownster.HeartSafeAlertsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HeartSafeAlerts.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HeartSafeAlerts";
+			};
+			name = Release;
+		};
+		6FD0069E2E0CD5BC00504F55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 959KDL6FWJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brownster.HeartSafeAlertsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HeartSafeAlerts;
+			};
+			name = Debug;
+		};
+		6FD0069F2E0CD5BC00504F55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 959KDL6FWJ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brownster.HeartSafeAlertsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HeartSafeAlerts;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6FD006712E0CD5BB00504F55 /* Build configuration list for PBXProject "HeartSafeAlerts" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FD006952E0CD5BC00504F55 /* Debug */,
+				6FD006962E0CD5BC00504F55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FD006972E0CD5BC00504F55 /* Build configuration list for PBXNativeTarget "HeartSafeAlerts" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FD006982E0CD5BC00504F55 /* Debug */,
+				6FD006992E0CD5BC00504F55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FD0069A2E0CD5BC00504F55 /* Build configuration list for PBXNativeTarget "HeartSafeAlertsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FD0069B2E0CD5BC00504F55 /* Debug */,
+				6FD0069C2E0CD5BC00504F55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FD0069D2E0CD5BC00504F55 /* Build configuration list for PBXNativeTarget "HeartSafeAlertsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FD0069E2E0CD5BC00504F55 /* Debug */,
+				6FD0069F2E0CD5BC00504F55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6FD0066E2E0CD5BB00504F55 /* Project object */;
+}
