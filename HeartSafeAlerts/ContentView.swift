@@ -83,10 +83,10 @@ struct ContentView: View {
                             .onAppear {
                                 updatePulseAnimation()
                             }
-                            .onChange(of: monitor.isStale) { _ in
+                            .onChange(of: monitor.isStale) { oldValue, newValue in
                                 updatePulseAnimation()
                             }
-                            .onChange(of: monitor.isConnected) { _ in
+                            .onChange(of: monitor.isConnected) { oldValue, newValue in
                                 updatePulseAnimation()
                             }
 

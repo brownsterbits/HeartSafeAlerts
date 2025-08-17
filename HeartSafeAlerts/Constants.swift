@@ -49,7 +49,7 @@ enum Constants {
     }
     
     // Premium/IAP
-    static let premiumProductIdentifier = "\(Bundle.main.bundleIdentifier ?? "com.yourcompany.heartratealerts").pro"
+    static let premiumProductIdentifier = "\(Bundle.main.bundleIdentifier ?? "com.brownster.HeartSafeAlerts").pro"
     static let premiumPrice = "$4.99"
     
     // Add these for better App Store metadata

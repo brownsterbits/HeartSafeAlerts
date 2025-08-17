@@ -142,6 +142,27 @@ struct PremiumPaywallView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
+                            
+                            HStack(spacing: 15) {
+                                Button("Terms of Use") {
+                                    if let url = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/") {
+                                        UIApplication.shared.open(url)
+                                    }
+                                }
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                                
+                                Text("•")
+                                    .foregroundColor(.secondary)
+                                
+                                Button("Privacy Policy") {
+                                    if let url = URL(string: "https://gist.github.com/chadmbrown/18ea82e6bbc7580947174f614966dc85") {
+                                        UIApplication.shared.open(url)
+                                    }
+                                }
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                            }
                         }
                         .padding(.horizontal)
                         .padding(.bottom, 30)

@@ -6,6 +6,8 @@ struct SettingsView: View {
     @AppStorage(Constants.backgroundNotificationsEnabledKey) private var backgroundNotificationsEnabled = false
     @Environment(\.dismiss) var dismiss
     @State private var showPremiumPaywall = false
+    @State private var showRestoreSuccess = false
+    @State private var showError = false
     
     var body: some View {
         NavigationView {
@@ -159,7 +161,18 @@ struct SettingsView: View {
                 Section {
                     Button(action: {
                         Task {
+                            let wasPremiumBefore = premiumManager.isPremium
                             await premiumManager.restorePurchases()
+                            
+                            // Only show success if:
+                            // 1. No error occurred
+                            // 2. User is now premium
+                            // 3. They weren't already premium (new restore)
+                            if premiumManager.errorMessage == nil &&
+                               premiumManager.isPremium &&
+                               !wasPremiumBefore {
+                                showRestoreSuccess = true
+                            }
                         }
                     }) {
                         HStack {
@@ -181,6 +194,13 @@ struct SettingsView: View {
                         Text(Constants.fullVersionString)
                             .foregroundColor(.gray)
                     }
+                    
+                    HStack {
+                        Text("Developer")
+                        Spacer()
+                        Text("Chad Brown")
+                            .foregroundColor(.gray)
+                    }
                 }
             }
             .navigationTitle("Settings")
@@ -196,19 +216,21 @@ struct SettingsView: View {
         .sheet(isPresented: $showPremiumPaywall) {
             PremiumPaywallView()
         }
-        .alert("Pro Restored", isPresented: .constant(premiumManager.isPremium && premiumManager.errorMessage == nil && !showPremiumPaywall)) {
-            Button("OK") {
-                premiumManager.errorMessage = nil
-            }
+        .alert("Pro Restored", isPresented: $showRestoreSuccess) {
+            Button("OK") { }
         } message: {
             Text("Your pro purchase has been restored successfully!")
         }
-        .alert("Error", isPresented: .constant(premiumManager.errorMessage != nil && !premiumManager.purchaseInProgress)) {
+        .alert("Error", isPresented: $showError) {
             Button("OK") {
                 premiumManager.errorMessage = nil
+                showError = false
             }
         } message: {
             Text(premiumManager.errorMessage ?? "Unknown error")
+        }
+        .onChange(of: premiumManager.errorMessage) { oldValue, newValue in
+            showError = newValue != nil && !premiumManager.purchaseInProgress
         }
     }
     
