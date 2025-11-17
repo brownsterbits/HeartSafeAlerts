@@ -204,16 +204,16 @@ Chad Brown - [brownsterbits](https://github.com/brownsterbits)
 - Built with SwiftUI and modern Swift concurrency
 - Heart rate monitoring via Bluetooth SIG Heart Rate Service (0x180D)
 - Apple Watch integration via HealthKit
-- Developed with assistance from [Claude Code](https://claude.com/claude-code)
+- Developed with assistance from [
 
 ## Support
 
 For issues, questions, or feature requests, please:
 - Open an issue on [GitHub Issues](https://github.com/brownsterbits/HeartSafeAlerts/issues)
-- Contact: heartsafe@brownster.com (coming soon)
+- Contact: bits@brownster.com (coming soon)
 
 ---
 
-**Status**: v1.1 - Ready for App Store submission 🚀
+**Status**: v2 - Ready for App Store submission 🚀
 
 Made with ❤️ for those who care about their heart health
