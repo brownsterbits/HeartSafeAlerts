@@ -108,6 +108,10 @@ struct ContentView: View {
                     }
                     .padding(.horizontal)
 
+                    // Session Statistics
+                    SessionStatsView(stats: monitor.sessionStatistics)
+                        .padding(.top, 20)
+
                     Spacer()
 
                     Button(action: {

@@ -43,7 +43,37 @@ struct SettingsView: View {
                     )
                     .accessibilityLabel("Adjust maximum heart rate")
                 }
-                
+
+                Section(header: Text("Data Source")) {
+                    Picker("Heart Rate Source", selection: $monitor.dataSource) {
+                        ForEach(HeartRateDataSource.allCases) { source in
+                            HStack {
+                                Image(systemName: source.icon)
+                                Text(source.rawValue)
+                            }
+                            .tag(source)
+                        }
+                    }
+                    .pickerStyle(.menu)
+
+                    if let activeSource = monitor.activeSource {
+                        HStack {
+                            Text("Active Source")
+                            Spacer()
+                            HStack {
+                                Image(systemName: activeSource.icon)
+                                    .foregroundColor(.green)
+                                Text(activeSource.rawValue)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
+
+                    Text(monitor.dataSource.description)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
                 Section(header: Text("Alerts")) {
                     Toggle("Enable Alerts", isOn: $monitor.alertsEnabled)
                         .accessibilityLabel("Enable heart rate alerts")
@@ -107,6 +137,10 @@ struct SettingsView: View {
                             }
                         }
                     }
+                }
+
+                Section {
+                    CareCirclePreviewView()
                 }
 
                 Section(header: Text("About")) {
