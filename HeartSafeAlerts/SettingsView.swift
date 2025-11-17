@@ -2,12 +2,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var monitor: HeartRateMonitor
-    @EnvironmentObject var premiumManager: PremiumManager
     @AppStorage(Constants.backgroundNotificationsEnabledKey) private var backgroundNotificationsEnabled = false
     @Environment(\.dismiss) var dismiss
-    @State private var showPremiumPaywall = false
-    @State private var showRestoreSuccess = false
-    @State private var showError = false
     
     var body: some View {
         NavigationView {
@@ -48,46 +44,28 @@ struct SettingsView: View {
                     .accessibilityLabel("Adjust maximum heart rate")
                 }
                 
-                Section(header:
-                    HStack {
-                        Text("Alerts")
-                        if !premiumManager.isPremium {
-                            PremiumBadge()
-                        }
-                    }
-                ) {
-                    ZStack {
-                        VStack(spacing: 15) {
-                            Toggle("Enable Alerts", isOn: $monitor.alertsEnabled)
-                                .accessibilityLabel("Enable heart rate alerts")
-                                .disabled(!premiumManager.isPremium)
-                            
-                            // Show sub-options only when main alerts are enabled
-                            if monitor.alertsEnabled && premiumManager.isPremium {
-                                Toggle("Sound Alerts", isOn: $monitor.soundAlertsEnabled)
-                                    .accessibilityLabel("Enable sound alerts")
-                                    .padding(.leading, 20)
-                                
-                                Toggle("Vibration Alerts", isOn: $monitor.vibrationAlertsEnabled)
-                                    .accessibilityLabel("Enable vibration alerts")
-                                    .padding(.leading, 20)
-                                
-                                Toggle("Background Notifications", isOn: $backgroundNotificationsEnabled)
-                                    .accessibilityLabel("Enable background notifications")
-                                    .padding(.leading, 20)
-                                    .onChange(of: backgroundNotificationsEnabled) { _, newValue in
-                                        if newValue {
-                                            requestNotificationPermission()
-                                        }
-                                    }
+                Section(header: Text("Alerts")) {
+                    Toggle("Enable Alerts", isOn: $monitor.alertsEnabled)
+                        .accessibilityLabel("Enable heart rate alerts")
+
+                    // Show sub-options only when main alerts are enabled
+                    if monitor.alertsEnabled {
+                        Toggle("Sound Alerts", isOn: $monitor.soundAlertsEnabled)
+                            .accessibilityLabel("Enable sound alerts")
+                            .padding(.leading, 20)
+
+                        Toggle("Vibration Alerts", isOn: $monitor.vibrationAlertsEnabled)
+                            .accessibilityLabel("Enable vibration alerts")
+                            .padding(.leading, 20)
+
+                        Toggle("Background Notifications", isOn: $backgroundNotificationsEnabled)
+                            .accessibilityLabel("Enable background notifications")
+                            .padding(.leading, 20)
+                            .onChange(of: backgroundNotificationsEnabled) { _, newValue in
+                                if newValue {
+                                    requestNotificationPermission()
+                                }
                             }
-                        }
-                        
-                        if !premiumManager.isPremium {
-                            LockedFeatureOverlay {
-                                showPremiumPaywall = true
-                            }
-                        }
                     }
                 }
                 
@@ -130,63 +108,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                
-                if premiumManager.isPremium {
-                    Section(header: Text("Pro Status")) {
-                        HStack {
-                            Text("Status")
-                            Spacer()
-                            HStack {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.green)
-                                    .font(.caption)
-                                Text("Active")
-                                    .foregroundColor(.green)
-                            }
-                        }
-                        
-                        if let purchaseDate = UserDefaults.standard.object(forKey: Constants.premiumPurchaseDateKey) as? Date {
-                            HStack {
-                                Text("Purchased")
-                                Spacer()
-                                Text(purchaseDate, style: .date)
-                                    .foregroundColor(.gray)
-                                    .font(.caption)
-                            }
-                        }
-                    }
-                }
-                
-                // Simple restore purchase option for everyone
-                Section {
-                    Button(action: {
-                        Task {
-                            let wasPremiumBefore = premiumManager.isPremium
-                            await premiumManager.restorePurchases()
-                            
-                            // Only show success if:
-                            // 1. No error occurred
-                            // 2. User is now premium
-                            // 3. They weren't already premium (new restore)
-                            if premiumManager.errorMessage == nil &&
-                               premiumManager.isPremium &&
-                               !wasPremiumBefore {
-                                showRestoreSuccess = true
-                            }
-                        }
-                    }) {
-                        HStack {
-                            Text("Restore Purchase")
-                            Spacer()
-                            if premiumManager.purchaseInProgress {
-                                ProgressView()
-                                    .scaleEffect(0.8)
-                            }
-                        }
-                    }
-                    .disabled(premiumManager.purchaseInProgress)
-                }
-                
+
                 Section(header: Text("About")) {
                     HStack {
                         Text("Version")
@@ -212,25 +134,6 @@ struct SettingsView: View {
                     }
                 }
             }
-        }
-        .sheet(isPresented: $showPremiumPaywall) {
-            PremiumPaywallView()
-        }
-        .alert("Pro Restored", isPresented: $showRestoreSuccess) {
-            Button("OK") { }
-        } message: {
-            Text("Your pro purchase has been restored successfully!")
-        }
-        .alert("Error", isPresented: $showError) {
-            Button("OK") {
-                premiumManager.errorMessage = nil
-                showError = false
-            }
-        } message: {
-            Text(premiumManager.errorMessage ?? "Unknown error")
-        }
-        .onChange(of: premiumManager.errorMessage) { oldValue, newValue in
-            showError = newValue != nil && !premiumManager.purchaseInProgress
         }
     }
     

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6F2859B32E163C0B00C15C58 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F2859B22E163C0B00C15C58 /* StoreKit.framework */; };
-		6F2859B92E164B5300C15C58 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6F2859B82E164B5300C15C58 /* Configuration.storekit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,7 +29,6 @@
 
 /* Begin PBXFileReference section */
 		6F2859B22E163C0B00C15C58 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		6F2859B82E164B5300C15C58 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
 		6FD006762E0CD5BB00504F55 /* HeartSafeAlerts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeartSafeAlerts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FD006832E0CD5BC00504F55 /* HeartSafeAlertsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HeartSafeAlertsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FD0068D2E0CD5BC00504F55 /* HeartSafeAlertsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HeartSafeAlertsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,7 +102,6 @@
 		6FD0066D2E0CD5BB00504F55 = {
 			isa = PBXGroup;
 			children = (
-				6F2859B82E164B5300C15C58 /* Configuration.storekit */,
 				6FD006782E0CD5BB00504F55 /* HeartSafeAlerts */,
 				6FD006862E0CD5BC00504F55 /* HeartSafeAlertsTests */,
 				6FD006902E0CD5BC00504F55 /* HeartSafeAlertsUITests */,
@@ -243,7 +240,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F2859B92E164B5300C15C58 /* Configuration.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

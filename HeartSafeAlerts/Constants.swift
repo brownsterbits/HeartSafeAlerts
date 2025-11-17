@@ -25,8 +25,6 @@ enum Constants {
     static let soundAlertsEnabledKey = "soundAlertsEnabled"
     static let vibrationAlertsEnabledKey = "vibrationAlertsEnabled"
     static let backgroundNotificationsEnabledKey = "backgroundNotificationsEnabled"
-    static let hasSeenPremiumPromptKey = "hasSeenPremiumPrompt"
-    static let premiumPurchaseDateKey = "premiumPurchaseDate"
     
     // Notification
     static let notificationCategoryIdentifier = "HEART_ALERT"
@@ -47,12 +45,8 @@ enum Constants {
     static var fullVersionString: String {
         "Version \(appVersion) (Build \(buildNumber))"
     }
-    
-    // Premium/IAP
-    static let premiumProductIdentifier = "\(Bundle.main.bundleIdentifier ?? "com.brownster.HeartSafeAlerts").pro"
-    static let premiumPrice = "$4.99"
-    
-    // Add these for better App Store metadata
+
+    // App Store metadata
     static var appName: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
         Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ??

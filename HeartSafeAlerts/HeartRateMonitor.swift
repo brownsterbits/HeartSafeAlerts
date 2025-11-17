@@ -225,8 +225,6 @@ class HeartRateMonitor: NSObject, ObservableObject {
     // MARK: - Alert Methods
     
     private func checkHeartRateAndAlert() {
-        // Check if user has premium before any alerts
-        guard UserDefaults.standard.bool(forKey: "isPremium") else { return }
         guard alertsEnabled else { return }
         guard isOutOfRange else { return }
         
@@ -250,8 +248,6 @@ class HeartRateMonitor: NSObject, ObservableObject {
     }
     
     private func checkHeartRateAndNotify() {
-        // Check if user has premium before any notifications
-        guard UserDefaults.standard.bool(forKey: "isPremium") else { return }
         guard alertsEnabled else { return }
         guard UserDefaults.standard.bool(forKey: Constants.backgroundNotificationsEnabledKey) else { return }
         guard isOutOfRange else { return }
