@@ -2,11 +2,16 @@
 
 **Real-time heart rate monitoring that keeps your loved ones in the loop**
 
+> 🎉 **Version 2.0 - The Free Revolution** - Everything that was premium is now FREE. Forever.
+
 HeartSafeAlerts is an iOS app that monitors your heart rate via Bluetooth LE heart rate monitors or Apple Watch, providing real-time alerts when your heart rate goes outside your target range.
 
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
 [![Platform](https://img.shields.io/badge/platform-iOS%2018.4%2B-blue.svg)](https://www.apple.com/ios/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![App Store](https://img.shields.io/badge/App%20Store-Awaiting%20Review-yellow.svg)](https://apps.apple.com/app/heartsafealerts)
+
+**Status:** ✅ Version 2.0 submitted to App Store (January 16, 2025) - Awaiting Apple review
 
 ## Features
 
@@ -42,7 +47,16 @@ _Coming soon - App Store screenshots will be added here_
 ## Installation
 
 ### From App Store
-_Coming soon - App Store link will be added here_
+**Status:** Version 2.0 submitted January 16, 2025 - Awaiting Apple review (1-3 days typical)
+
+📱 [Download on the App Store](https://apps.apple.com/app/heartsafealerts) _(link will activate once approved)_
+
+**What's in v2.0:**
+- Everything FREE (no subscriptions, no paywalls)
+- Dual data sources (Bluetooth + Apple Watch)
+- Session statistics
+- Dark mode
+- Privacy-first (no data collection)
 
 ### From Source
 
@@ -190,6 +204,25 @@ HeartSafeAlerts takes your privacy seriously:
 - **Care Circle Opt-In**: Future premium features require explicit consent
 
 **Important**: This app is not a medical device and should not be used for medical diagnosis or treatment. Always consult healthcare professionals for medical advice.
+
+## Documentation
+
+- 🌐 [**Marketing Site**](https://brownsterbits.github.io/HeartSafeAlerts/) - Main landing page
+- 📖 [**Getting Started Guide**](https://brownsterbits.github.io/HeartSafeAlerts/HELP) - Step-by-step setup
+- ❓ [**FAQ**](https://brownsterbits.github.io/HeartSafeAlerts/FAQ) - Frequently asked questions
+- 🛠️ [**Support**](https://brownsterbits.github.io/HeartSafeAlerts/SUPPORT) - Troubleshooting and help
+- 🔒 [**Privacy Policy**](https://brownsterbits.github.io/HeartSafeAlerts/PRIVACY) - How we handle your data
+- 📄 [**Terms of Service**](https://brownsterbits.github.io/HeartSafeAlerts/TERMS) - Legal agreements
+- 📱 [**App Store Submission Guide**](https://brownsterbits.github.io/HeartSafeAlerts/APP_STORE_SUBMISSION) - Marketing materials
+- 🗺️ [**Product Roadmap**](ROADMAP.md) - Future plans
+- 🔧 [**Refactoring Log**](REFACTORING.md) - Technical changes
+- 👨‍💻 [**Development Guide**](CLAUDE.md) - For developers
+
+## Support & Contact
+
+- 📧 Email: bits@brownster.com
+- 🐛 [Report Issues](https://github.com/brownsterbits/HeartSafeAlerts/issues)
+- 💡 [Feature Requests](https://github.com/brownsterbits/HeartSafeAlerts/issues)
 
 ## License
 
