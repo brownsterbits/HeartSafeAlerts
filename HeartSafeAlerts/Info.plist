@@ -4,6 +4,8 @@
 <dict>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Heart Alerts needs access to your heart rate data from Apple Watch to monitor your heart rate and alert you when it's outside your target range.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Heart Alerts does not write any data to HealthKit. This permission is required by Apple but not used by the app.</string>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Heart Alerts needs notification access to alert you when your heart rate is outside your target range.</string>
 	<key>UIBackgroundModes</key>
