@@ -18,53 +18,109 @@ HeartSafeAlerts is an iOS app that monitors heart rate via Bluetooth LE heart ra
 - **Backend**: Firebase (configured but not currently in code)
 - **Build System**: Xcode project (not workspace)
 
-## Architecture
+## Architecture (Post-Refactoring v1.1)
 
-### Core Components
+### Core Managers
 
 **HeartRateMonitor** (`HeartRateMonitor.swift`)
-- Central `ObservableObject` managing Bluetooth connection lifecycle
-- Implements `CBCentralManagerDelegate` and `CBPeripheralDelegate`
-- Handles heart rate data parsing from BLE Heart Rate Service (UUID 180D)
-- Manages alert logic with configurable thresholds and cooldown periods
+- Coordinator `ObservableObject` that orchestrates between data sources and managers
+- Manages dual data sources (Bluetooth + HealthKit) with automatic selection
 - Features:
-  - Automatic reconnection on disconnect
+  - Automatic source fallback (Bluetooth preferred, HealthKit backup)
+  - User-configurable source selection (Bluetooth/Apple Watch/Automatic)
+  - Combines data from BluetoothManager and HealthKitManager
+  - Delegates alert checking to AlertManager
+  - Updates SessionStatistics with incoming data
+  - 66% reduction in complexity (442 lines → 299 lines)
+
+**BluetoothManager** (`BluetoothManager.swift`)
+- Handles all CoreBluetooth operations
+- Implements `CBCentralManagerDelegate` and `CBPeripheralDelegate`
+- Features:
+  - Scanning for Heart Rate Service (UUID 180D)
+  - Automatic connection and reconnection
+  - BLE heart rate data parsing (8-bit and 16-bit formats)
   - Stale data detection (>5 seconds without update)
-  - Grace period (5 seconds after connection) before triggering alerts
-  - Background/foreground lifecycle management
-  - State restoration for background connections
+  - Grace period (5 seconds after connection)
+  - Connection timeout handling
+
+**HealthKitManager** (`HealthKitManager.swift`)
+- Handles Apple Watch integration via HealthKit
+- Features:
+  - Authorization request flow
+  - Continuous heart rate monitoring via HKAnchoredObjectQuery
+  - Real-time updates from Apple Watch
+  - Swift 6 concurrency-safe with @MainActor
+  - One-time fetch capability for latest heart rate
+
+**AlertManager** (`AlertManager.swift`)
+- Manages all alert logic separated from data sources
+- Features:
+  - Configurable thresholds (min/max BPM)
+  - Alert cooldown periods (5s local, 60s notifications)
+  - Sound alerts (system sound ID 1304)
+  - Vibration alerts (haptic feedback)
+  - Background notifications
+  - Grace period and stale data checks
+  - All alerts now FREE (no premium gating)
+
+**SessionStatistics** (`SessionStatistics.swift`)
+- Tracks session metrics separate from monitoring logic
+- Features:
+  - Min/Max/Average BPM calculation
+  - Time in/out of range tracking
+  - Session duration formatting
+  - Threshold-aware statistics
+  - Reset on new session
 
 **BluetoothState** (`BluetoothState.swift`)
-- Enum representing all connection states with associated values
-- Wraps CoreBluetooth states with app-specific states (scanning, connecting, connected, disconnected)
+- Enum representing all connection states
+- States: unknown, poweredOff, unauthorized, unsupported, idle, scanning, connecting, connected(deviceName), disconnected, error(message)
 
-**PremiumManager** (`PremiumManager.swift`)
-- Handles StoreKit 2 purchase flow and transaction verification
-- Listens for transaction updates via `Transaction.updates`
-- Stores premium state in UserDefaults ("isPremium" key)
-- Product ID: `{bundleIdentifier}.pro`
+**HeartRateDataSource** (`HeartRateDataSource.swift`)
+- Enum for data source selection: bluetooth, appleWatch, automatic
+- Used in Settings picker for user preference
+
+### UI Components
 
 **ContentView** (`ContentView.swift`)
 - Main UI showing real-time heart rate with animated heart icon
 - Status banner with color coding (gray/blue/orange/red/green)
 - Tap-to-reconnect functionality when disconnected
+- SessionStatsView integration (shown when data available)
 - Accessibility support (VoiceOver, reduce motion)
 
 **SettingsView** (`SettingsView.swift`)
 - Heart rate threshold configuration (sliders)
-- Alert settings (premium-gated with overlay)
+- Data source picker (Bluetooth/Apple Watch/Automatic)
+- Alert settings (all FREE, no premium gating)
 - Device status display
-- Premium status and restore purchase option
+- Care Circle preview (teaser for future premium)
+- About section
 
-### Current Feature Set (v1.0 - Being Refactored)
-**All features are becoming FREE in v1.1:**
-- Real-time heart rate monitoring
-- Bluetooth LE device support
-- Custom threshold configuration
-- Sound alerts (system sound ID 1304)
-- Vibration alerts (haptic feedback)
-- Background notifications
-- Dark mode support
+**SessionStatsView** (`SessionStatsView.swift`)
+- Displays session statistics in ContentView
+- Shows min/max/avg BPM
+- Time in/out of range with formatted durations
+- Conditionally shown only when data exists
+
+**CareCirclePreviewView** (`CareCirclePreviewView.swift`)
+- Teases future premium feature in Settings
+- Shows "COMING SOON" badge
+- Lists 4 key features with icons
+- Displays $2.99/month pricing
+
+### Current Feature Set (v1.1 - All FREE)
+- ✅ Real-time heart rate monitoring
+- ✅ Dual data sources: Bluetooth LE OR Apple Watch via HealthKit
+- ✅ Automatic source selection with manual override
+- ✅ Custom threshold configuration
+- ✅ Sound alerts (system sound ID 1304)
+- ✅ Vibration alerts (haptic feedback)
+- ✅ Background notifications
+- ✅ Session statistics (min/max/avg, time in/out of range)
+- ✅ Dark mode support
+- ✅ Stale data detection and grace periods
 
 **Future Premium Feature (v1.2+):**
 - **Care Circle** ($2.99/month or $19.99/year):
@@ -76,20 +132,28 @@ HeartSafeAlerts is an iOS app that monitors heart rate via Bluetooth LE heart ra
   - Export reports for doctors
 
 ### Data Flow
-1. User taps "Connect" → `HeartRateMonitor.startMonitoring()`
-2. CoreBluetooth scans for Heart Rate Service (180D)
-3. Auto-connect to first discovered device
-4. Subscribe to Heart Rate Measurement characteristic (2A37)
-5. Parse BLE data format (handles 8-bit and 16-bit heart rate values)
-6. Update UI via `@Published` properties
-7. Check thresholds → trigger alerts if premium user
+1. User launches app → `HeartRateMonitor.startMonitoring()`
+2. Based on data source setting:
+   - **Bluetooth**: `BluetoothManager` scans for Heart Rate Service (180D), connects, subscribes to characteristic (2A37)
+   - **Apple Watch**: `HealthKitManager` requests authorization, starts HKAnchoredObjectQuery for continuous heart rate
+   - **Automatic**: Tries Bluetooth first, falls back to HealthKit if Bluetooth unavailable
+3. Data updates flow through Combine publishers:
+   - `BluetoothManager.$currentHeartRate` → `HeartRateMonitor`
+   - `HealthKitManager.$currentHeartRate` → `HeartRateMonitor`
+4. `HeartRateMonitor` handles updates:
+   - Updates published properties for UI
+   - Adds sample to `SessionStatistics`
+   - Calls `AlertManager.checkHeartRate()` to evaluate alerts
+5. `AlertManager` triggers alerts if out of range (with cooldowns)
+6. UI updates automatically via `@Published` properties
 
 ### State Management
-- `@StateObject` for view-owned objects (HeartRateMonitor, PremiumManager in App)
-- `@EnvironmentObject` for passing down the view hierarchy
-- `@Published` properties in ObservableObject classes
-- `@AppStorage` for direct UserDefaults binding
-- UserDefaults for persistence (thresholds, preferences, premium status)
+- `@StateObject` for view-owned objects (HeartRateMonitor in App)
+- `@EnvironmentObject` for passing monitor down the view hierarchy
+- `@Published` properties in ObservableObject classes for reactive updates
+- `@AppStorage` for direct UserDefaults binding (backgroundNotificationsEnabled)
+- UserDefaults for persistence (thresholds, alert preferences, data source selection)
+- Combine framework for reactive data flow between managers
 
 ## Build and Test Commands
 
