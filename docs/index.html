@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HeartSafeAlerts 2.0 - Professional heart rate monitoring, completely free forever. Connect Bluetooth monitors or Apple Watch. Unlimited alerts. Zero subscriptions. Available on iOS.">
+    <meta name="keywords" content="free heart rate monitor, heart rate alert app, BPM tracker, Bluetooth heart rate, Apple Watch heart monitor, cardio tracking, fitness monitoring, health app">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://brownsterbits.github.io/HeartSafeAlerts/">
+    <meta property="og:title" content="HeartSafeAlerts 2.0 - Free Heart Rate Monitoring for iPhone">
+    <meta property="og:description" content="Everything that was premium is now FREE. Professional heart monitoring with Bluetooth + Apple Watch support. No subscriptions. No limits. Ever.">
+    <meta property="og:image" content="https://brownsterbits.github.io/HeartSafeAlerts/assets/og-image.png">
+
+    <title>HeartSafeAlerts - Free Heart Rate Monitoring for iPhone</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #FF3B30;
+            --dark-bg: #1C1C1E;
+            --card-bg: #2C2C2E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --accent-green: #34C759;
+            --accent-blue: #007AFF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--dark-bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary-red);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary-red) 0%, #FF6B6B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #FF6B6B;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: white;
+            border: 2px solid var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .hero-features {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+            color: var(--text-secondary);
+            font-size: 16px;
+            animation: fadeIn 1.4s ease-out;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkmark {
+            color: var(--accent-green);
+            font-size: 20px;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 20px;
+            background: var(--dark-bg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-badge {
+            color: var(--primary-red);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Comparison Section */
+        .comparison {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--dark-bg) 100%);
+        }
+
+        .comparison-table {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            padding: 20px 40px;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-header {
+            background: var(--primary-red);
+            font-weight: 600;
+        }
+
+        .comparison-feature {
+            font-weight: 500;
+        }
+
+        .comparison-cell {
+            text-align: center;
+        }
+
+        .comparison-yes {
+            color: var(--accent-green);
+            font-size: 24px;
+        }
+
+        .comparison-no {
+            color: var(--text-secondary);
+            font-size: 24px;
+        }
+
+        /* Use Cases Section */
+        .use-cases {
+            padding: 100px 20px;
+            background: var(--dark-bg);
+        }
+
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .use-case {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .use-case-emoji {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .use-case-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .use-case-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Care Circle Preview */
+        .care-circle {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .care-circle::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(52, 199, 89, 0.1) 0%, transparent 70%);
+        }
+
+        .care-circle-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .coming-soon {
+            display: inline-block;
+            background: var(--accent-green);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .care-circle-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .care-circle-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .care-circle-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .care-circle-feature {
+            padding: 20px;
+        }
+
+        .care-circle-feature-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .care-circle-price {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .care-circle-note {
+            font-size: 16px;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 100px 20px;
+            background: var(--dark-bg);
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .faq-question {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-answer {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
+        .final-cta {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--primary-red) 0%, #FF6B6B 100%);
+            text-align: center;
+        }
+
+        .final-cta-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .final-cta-subtitle {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 60px 20px;
+            background: var(--card-bg);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--text-primary);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 42px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .comparison-row {
+                grid-template-columns: 1.5fr 1fr 1fr;
+                padding: 15px 20px;
+                font-size: 14px;
+            }
+
+            .care-circle-title,
+            .final-cta-title {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge">🎉 VERSION 2.0 - THE FREE REVOLUTION</div>
+            <h1>Heart Rate Monitoring.<br><span>Free Forever.</span></h1>
+            <p class="hero-subtitle">Everything that was premium is now FREE. Professional heart monitoring with Bluetooth + Apple Watch support. No subscriptions. No limits. Ever.</p>
+
+            <div class="cta-buttons">
+                <a href="https://apps.apple.com/app/heartsafealerts" class="btn btn-primary">
+                    <span>📱</span> Download Free on iOS
+                </a>
+                <a href="https://github.com/brownsterbits/HeartSafeAlerts" class="btn btn-secondary">
+                    <span>⭐</span> View on GitHub
+                </a>
+            </div>
+
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <span class="checkmark">✓</span>
+                    <span>100% Free</span>
+                </div>
+                <div class="hero-feature">
+                    <span class="checkmark">✓</span>
+                    <span>No Subscriptions</span>
+                </div>
+                <div class="hero-feature">
+                    <span class="checkmark">✓</span>
+                    <span>Open Source</span>
+                </div>
+                <div class="hero-feature">
+                    <span class="checkmark">✓</span>
+                    <span>No Data Collection</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">POWERFUL FEATURES</div>
+                <h2 class="section-title">Everything You Need.<br>Nothing You Don't.</h2>
+                <p class="section-subtitle">Version 2.0 is a complete rebuild focused on what matters: reliable monitoring, intelligent alerts, and absolute privacy.</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🫀</div>
+                    <h3 class="feature-title">Dual Data Sources</h3>
+                    <p class="feature-description">Connect via Bluetooth LE heart rate monitors (Polar, Wahoo, Garmin) OR Apple Watch via HealthKit. App intelligently picks the best available source.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3 class="feature-title">Smart Alerts</h3>
+                    <p class="feature-description">Customizable high/low heart rate thresholds. Sound, vibration, and push notifications. Works even when app is in background.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Session Statistics</h3>
+                    <p class="feature-description">Real-time tracking of min/max/average BPM, time in range, and session duration. Perfect for workouts or daily monitoring.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Privacy First</h3>
+                    <p class="feature-description">Your health data stays on YOUR device. No cloud storage. No analytics. No tracking. Open source for transparency.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌙</div>
+                    <h3 class="feature-title">Dark Mode</h3>
+                    <p class="feature-description">Beautiful interface that follows your system appearance. Easy on the eyes during late-night monitoring.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Lightning Fast</h3>
+                    <p class="feature-description">Built with Swift 6 and SwiftUI. 66% reduction in code complexity for better performance and reliability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="comparison">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">V1 VS V2</div>
+                <h2 class="section-title">We Tore Down The Paywalls</h2>
+                <p class="section-subtitle">Version 1 had premium features. Version 2 has ZERO paywalls. This is what changed.</p>
+            </div>
+
+            <div class="comparison-table">
+                <div class="comparison-row comparison-header">
+                    <div>Feature</div>
+                    <div>Version 1.0</div>
+                    <div>Version 2.0</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Bluetooth Heart Rate Monitors</div>
+                    <div class="comparison-cell comparison-yes">✓</div>
+                    <div class="comparison-cell comparison-yes">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Apple Watch via HealthKit</div>
+                    <div class="comparison-cell comparison-no">✕</div>
+                    <div class="comparison-cell comparison-yes">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Custom Alert Thresholds</div>
+                    <div class="comparison-cell comparison-yes">✓</div>
+                    <div class="comparison-cell comparison-yes">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Background Notifications</div>
+                    <div class="comparison-cell">💰 Premium</div>
+                    <div class="comparison-cell comparison-yes">✓ FREE</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Session Statistics</div>
+                    <div class="comparison-cell">💰 Premium</div>
+                    <div class="comparison-cell comparison-yes">✓ FREE</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Unlimited Monitoring Time</div>
+                    <div class="comparison-cell">💰 Premium</div>
+                    <div class="comparison-cell comparison-yes">✓ FREE</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Dark Mode</div>
+                    <div class="comparison-cell comparison-no">✕</div>
+                    <div class="comparison-cell comparison-yes">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Monthly Cost</div>
+                    <div class="comparison-cell">$4.99</div>
+                    <div class="comparison-cell comparison-yes">$0.00</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="use-cases">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">WHO IT'S FOR</div>
+                <h2 class="section-title">Built For Real People</h2>
+                <p class="section-subtitle">Whether you're an athlete, senior, or someone managing a heart condition—this is for you.</p>
+            </div>
+
+            <div class="use-case-grid">
+                <div class="use-case">
+                    <div class="use-case-emoji">🏃‍♂️</div>
+                    <h3 class="use-case-title">Athletes & Runners</h3>
+                    <p class="use-case-description">Stay in your target training zones. Get instant alerts if you're pushing too hard or need to pick up the pace.</p>
+                </div>
+
+                <div class="use-case">
+                    <div class="use-case-emoji">👴</div>
+                    <h3 class="use-case-title">Seniors & Caregivers</h3>
+                    <p class="use-case-description">Peace of mind monitoring. Set conservative thresholds and get alerted to any concerning changes.</p>
+                </div>
+
+                <div class="use-case">
+                    <div class="use-case-emoji">❤️</div>
+                    <h3 class="use-case-title">Heart Conditions</h3>
+                    <p class="use-case-description">Supplemental monitoring between doctor visits. Track patterns and share data with your healthcare provider.</p>
+                </div>
+
+                <div class="use-case">
+                    <div class="use-case-emoji">💪</div>
+                    <h3 class="use-case-title">Fitness Enthusiasts</h3>
+                    <p class="use-case-description">Optimize your workouts with real-time BPM tracking and detailed session statistics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Care Circle Preview -->
+    <section class="care-circle">
+        <div class="care-circle-content">
+            <div class="coming-soon">COMING Q2 2025</div>
+            <h2 class="care-circle-title">Care Circle</h2>
+            <p class="care-circle-subtitle">Optional premium feature: Alert your loved ones when your heart rate is concerning. Think of it like Life360 for heart health.</p>
+
+            <div class="care-circle-features">
+                <div class="care-circle-feature">
+                    <div class="care-circle-feature-title">👨‍👩‍👧‍👦 Family Notifications</div>
+                    <p class="feature-description">Alert up to 5 trusted contacts</p>
+                </div>
+
+                <div class="care-circle-feature">
+                    <div class="care-circle-feature-title">✅ Check-In Workflow</div>
+                    <p class="feature-description">"I'm Okay" confirmation system</p>
+                </div>
+
+                <div class="care-circle-feature">
+                    <div class="care-circle-feature-title">📈 Weekly Summaries</div>
+                    <p class="feature-description">Health trends for your circle</p>
+                </div>
+
+                <div class="care-circle-feature">
+                    <div class="care-circle-feature-title">📊 Historical Data</div>
+                    <p class="feature-description">Long-term tracking and export</p>
+                </div>
+            </div>
+
+            <p class="care-circle-price">$2.99/month or $19.99/year</p>
+            <p class="care-circle-note">All current features remain FREE forever</p>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">QUESTIONS</div>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h3 class="faq-question">
+                        <span>❓</span> Is this really completely free?
+                    </h3>
+                    <p class="faq-answer">Yes. 100%. No subscriptions, no in-app purchases, no feature locks. Everything in Version 2.0 is free forever. We made a commitment: accessibility over profit.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">
+                        <span>🏥</span> Is this a medical device?
+                    </h3>
+                    <p class="faq-answer">No. HeartSafeAlerts is a wellness app, not a medical device. It's not FDA-cleared or clinically validated. Don't use it for medical diagnosis, treatment, or emergencies. Always consult healthcare professionals.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">
+                        <span>📱</span> What devices does it work with?
+                    </h3>
+                    <p class="faq-answer">iPhone 8 or newer with iOS 18.4+. Works with any Bluetooth LE heart rate monitor (Polar, Wahoo, Garmin, Scosche, etc.) OR Apple Watch Series 4 or newer.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">
+                        <span>🔒</span> What data do you collect?
+                    </h3>
+                    <p class="faq-answer">None. Your heart rate data stays on YOUR device. No cloud storage. No analytics. No tracking. We don't even have servers. Open source on GitHub for transparency.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">
+                        <span>💰</span> What about Care Circle?
+                    </h3>
+                    <p class="faq-answer">Care Circle (coming Q2 2025) is an optional $2.99/month premium subscription for family notifications and health sharing. All current features remain free even if you never subscribe.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">
+                        <span>📊</span> Can I export my data?
+                    </h3>
+                    <p class="faq-answer">Session statistics are temporary (reset each session). Historical data export will be available with Care Circle in Q2 2025.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2 class="final-cta-title">Start Monitoring Your Heart Rate Today</h2>
+            <p class="final-cta-subtitle">Free forever. No credit card required. Available now on iOS.</p>
+            <a href="https://apps.apple.com/app/heartsafealerts" class="btn btn-secondary" style="background: white; color: var(--primary-red);">
+                <span>📱</span> Download Free on the App Store
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="PRIVACY" class="footer-link">Privacy Policy</a>
+                <a href="TERMS" class="footer-link">Terms of Service</a>
+                <a href="SUPPORT" class="footer-link">Support</a>
+                <a href="HELP" class="footer-link">Help</a>
+                <a href="FAQ" class="footer-link">FAQ</a>
+                <a href="https://github.com/brownsterbits/HeartSafeAlerts" class="footer-link">GitHub</a>
+                <a href="mailto:bits@brownster.com" class="footer-link">Contact</a>
+            </div>
+            <p class="footer-copyright">
+                © 2025 HeartSafeAlerts. Developed by Chad Brown.<br>
+                Open Source • MIT License • Making heart rate monitoring accessible to everyone.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
