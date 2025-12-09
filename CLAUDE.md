@@ -219,8 +219,10 @@ xcodebuild -project HeartSafeAlerts.xcodeproj -scheme HeartSafeAlerts -configura
 - Heart rate limits: 40-200 BPM range, default 60-100 BPM
 - Alert cooldowns: 5s for local alerts, 60s for notifications
 - Connection timeout: 30 seconds
-- Stale data threshold: 5 seconds without update
-- Grace period: 5 seconds after connection
+- Stale data threshold: 5 seconds without update (⚠️ currently hardcoded in BluetoothManager)
+- Grace period: 5 seconds after connection (⚠️ currently hardcoded in BluetoothManager)
+
+**Note:** See `TECHNICAL_DEBT.md` for planned extraction of hardcoded timing values to Constants.
 
 ## SwiftUI Patterns Used
 - `@StateObject` for object ownership
@@ -267,26 +269,35 @@ All alert methods check premium status first before executing.
 
 ## Current Status & Roadmap
 
-### Active Refactoring (v1.1)
-See `REFACTORING.md` for detailed plan. Key changes:
-- **Removing all premium code** - Making everything free
-- **Architecture cleanup** - Separating AlertManager, BluetoothManager, SessionStatistics
-- **Dark mode** - Removing forced light mode
-- **UI improvements** - Extracting reusable components, adding session stats
+### Current Version: v2.0 ✅
+**Status:** Submitted to App Store (January 16, 2025)
+**Refactoring:** ✅ COMPLETE (see `REFACTORING.md`)
+
+**What's Live in v2.0:**
+- All features FREE (removed premium gating)
+- Dual data sources (Bluetooth + Apple Watch via HealthKit)
+- Session statistics tracking
+- Dark mode support
+- Modern SwiftUI architecture with separated managers
+- Care Circle preview (teaser for future premium)
+
+### Technical Debt & Future Improvements
+See `TECHNICAL_DEBT.md` for tracked code quality improvements, including:
+- Extract magic numbers to Constants (grace period, stale threshold)
+- Replace deprecated NavigationView with NavigationStack
+- Optional Bluetooth validation enhancements
 
 ### Upcoming Features (See ROADMAP.md)
-- **Phase 1 (Weeks 1-4):** HealthKit integration, session stats, App Store v1.1
-- **Phase 2 (Weeks 5-12):** Care Circle MVP with subscription
-- **Phase 3 (Weeks 13-20):** Apple Watch app
+- **Phase 2 (Weeks 5-12):** Care Circle MVP with subscription ($2.99/month)
+- **Phase 3 (Weeks 13-20):** Apple Watch companion app
 - **Phase 4 (Weeks 21-26):** Intelligence layer (pattern detection, personalization)
 
 ## Current Limitations
 - No landscape orientation support
-- No HealthKit integration yet (in Phase 1)
 - No historical data storage (coming in Phase 2)
-- No Firebase integration active
-- Premium code being removed (in progress)
+- No Firebase integration active (intentionally privacy-first)
 - No SwiftLint configuration
+- See `TECHNICAL_DEBT.md` for minor code quality improvements
 
 ## New Architecture (Post-Refactoring)
 
@@ -349,4 +360,5 @@ This makes testing easier, reduces coupling, and prepares for HealthKit integrat
 ### Documentation
 - `CLAUDE.md` - This file (development guidance)
 - `ROADMAP.md` - Product roadmap (6-month plan)
-- `REFACTORING.md` - Refactoring plan and checklist
+- `REFACTORING.md` - Refactoring plan and checklist (v2.0 - COMPLETE)
+- `TECHNICAL_DEBT.md` - Code quality improvements and polish items for future releases
