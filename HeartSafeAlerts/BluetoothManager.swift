@@ -29,12 +29,12 @@ class BluetoothManager: NSObject, ObservableObject {
     var isStale: Bool {
         guard isConnected else { return false }
         guard let lastUpdate = lastUpdate else { return true }
-        return Date().timeIntervalSince(lastUpdate) > 5
+        return Date().timeIntervalSince(lastUpdate) > Constants.staleDataThreshold
     }
 
     var hasGracePeriodExpired: Bool {
         guard let connectionTime = connectionTime else { return true }
-        return Date().timeIntervalSince(connectionTime) > 5
+        return Date().timeIntervalSince(connectionTime) > Constants.connectionGracePeriod
     }
 
     // MARK: - Initialization

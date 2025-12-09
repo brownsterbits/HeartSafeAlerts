@@ -17,6 +17,10 @@ enum Constants {
     static let alertSoundID: SystemSoundID = 1304
     static let defaultAlertCooldown: TimeInterval = 5
     static let defaultNotificationCooldown: TimeInterval = 60
+
+    // Bluetooth Timing
+    static let staleDataThreshold: TimeInterval = 5.0
+    static let connectionGracePeriod: TimeInterval = 5.0
     
     // UserDefaults Keys
     static let minHeartRateKey = "minHeartRate"

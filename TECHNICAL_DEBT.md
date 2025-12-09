@@ -1,78 +1,75 @@
 # HeartSafeAlerts Technical Debt
 
-**Last Updated:** 2025-01-19
+**Last Updated:** 2025-12-08
 **Status:** Post-v2.0 tracking for future maintenance releases
 
 This document tracks code quality improvements, refactoring opportunities, and technical debt items identified after v2.0 App Store submission. These are non-critical improvements that can be addressed in future maintenance releases.
 
 ---
 
-## Priority: Low (Polish & Best Practices)
+## Completed Items
 
-### 1. Extract Magic Numbers to Constants
+### ✅ 1. Extract Magic Numbers to Constants (DONE - 2025-12-08)
 
-**Issue:** Grace period and stale data thresholds are hardcoded in `BluetoothManager.swift`
+**Issue:** Grace period and stale data thresholds were hardcoded in `BluetoothManager.swift`
 
-**Current State:**
-- Line 32: `Date().timeIntervalSince(lastUpdate) > 5` (stale threshold)
-- Line 37: `Date().timeIntervalSince(connectionTime) > 5` (grace period)
-
-**Proposed Fix:**
-Add to `Constants.swift`:
-```swift
-// Bluetooth Timing
-static let staleDataThreshold: TimeInterval = 5.0
-static let connectionGracePeriod: TimeInterval = 5.0
-```
-
-Update `BluetoothManager.swift`:
-```swift
-var isStale: Bool {
-    guard isConnected else { return false }
-    guard let lastUpdate = lastUpdate else { return true }
-    return Date().timeIntervalSince(lastUpdate) > Constants.staleDataThreshold
-}
-
-var hasGracePeriodExpired: Bool {
-    guard let connectionTime = connectionTime else { return true }
-    return Date().timeIntervalSince(connectionTime) > Constants.connectionGracePeriod
-}
-```
-
-**Impact:** Low - Improves maintainability, no functional change
-**Effort:** 5 minutes
-**Files:** `Constants.swift`, `BluetoothManager.swift`
+**Resolution:** Added `Constants.staleDataThreshold` and `Constants.connectionGracePeriod` and updated BluetoothManager to use them.
 
 ---
 
-### 2. Replace Deprecated NavigationView with NavigationStack
+### ✅ 2. Replace Deprecated NavigationView with NavigationStack (DONE - 2025-12-08)
 
 **Issue:** Using deprecated `NavigationView` (iOS 13-15 API) instead of modern `NavigationStack` (iOS 16+)
 
-**Current State:**
-- `ContentView.swift:54` - Uses `NavigationView`
-- `SettingsView.swift:9` - Uses `NavigationView`
+**Resolution:** Replaced `NavigationView` with `NavigationStack` in `ContentView.swift` and `SettingsView.swift`.
 
-**Proposed Fix:**
-Replace all instances of:
+---
+
+## Priority: Medium (Swift 6 Readiness)
+
+### 3. Swift 6 Concurrency Warnings in BluetoothManager
+
+**Issue:** `BluetoothManager` is marked `@MainActor` but conforms to `CBCentralManagerDelegate` and `CBPeripheralDelegate` which have nonisolated protocol requirements. This causes warnings (and will be errors in Swift 6 strict mode).
+
+**Current Warnings:**
+```
+warning: conformance of 'BluetoothManager' to protocol 'CBCentralManagerDelegate'
+crosses into main actor-isolated code and can cause data races
+```
+
+**Affected Methods:**
+- `centralManager(_:didUpdateState:)`
+- `centralManager(_:willRestoreState:)`
+- `centralManager(_:didDiscover:advertisementData:rssi:)`
+- `centralManager(_:didConnect:)`
+- `centralManager(_:didDisconnectPeripheral:error:)`
+- `centralManager(_:didFailToConnect:error:)`
+- `peripheral(_:didDiscoverServices:)`
+- `peripheral(_:didDiscoverCharacteristicsFor:error:)`
+- `peripheral(_:didUpdateValueFor:error:)`
+
+**Proposed Fix Options:**
+
+**Option A:** Use `nonisolated` on delegate methods + `MainActor.run` for state updates
 ```swift
-NavigationView {
-    // content
+nonisolated func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+    Task { @MainActor in
+        self.bluetoothState = .connected(peripheral)
+        self.connectionTime = Date()
+        peripheral.discoverServices([Constants.heartRateServiceUUID])
+    }
 }
 ```
 
-With:
-```swift
-NavigationStack {
-    // content
-}
-```
+**Option B:** Move delegate conformance to a separate nonisolated helper class
 
-**Impact:** Low - Cosmetic modernization, NavigationView still works fine
-**Effort:** 2 minutes (simple find/replace)
-**Files:** `ContentView.swift`, `SettingsView.swift`
+**Option C:** Wait for Swift 6 to stabilize and address when upgrading
 
-**Note:** App targets iOS 18.4+, so NavigationStack is definitely available (introduced in iOS 16.0)
+**Impact:** Medium - Required for Swift 6 migration, but app works fine now
+**Effort:** 1-2 hours
+**Files:** `BluetoothManager.swift`
+
+**Decision:** Defer until Swift 6 migration is planned. Current behavior is stable.
 
 ---
 
