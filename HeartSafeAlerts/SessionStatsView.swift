@@ -34,7 +34,7 @@ struct SessionStatsView: View {
                     }
                 }
 
-                if let sessionStart = stats.sessionStart {
+                if stats.sessionStart != nil {
                     Text("Session: \(stats.formattedDuration())")
                         .font(.caption2)
                         .foregroundColor(.secondary)
