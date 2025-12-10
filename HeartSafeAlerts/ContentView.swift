@@ -33,7 +33,7 @@ struct ContentView: View {
             return .green
         }
     }
-    
+
     var isBannerTappable: Bool {
         return !monitor.isConnected
     }
@@ -50,11 +50,21 @@ struct ContentView: View {
         UIAccessibility.isReduceMotionEnabled ? nil : .easeInOut(duration: 1.0).repeatForever(autoreverses: true)
     }
 
+    /// Whether to display the heart rate value (vs showing "—")
+    var shouldShowHeartRate: Bool {
+        return !monitor.isStale && monitor.currentHeartRate > 0
+    }
+
+    /// Whether the heart should animate (has active data)
+    var shouldAnimate: Bool {
+        return monitor.isConnected && !monitor.isStale
+    }
+
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
                 VStack(spacing: 0) {
-                    // Status Banner (now tappable when disconnected)
+                    // Status Banner (tappable when disconnected)
                     Button(action: {
                         if isBannerTappable {
                             monitor.refreshConnection()
@@ -90,17 +100,19 @@ struct ContentView: View {
                                 updatePulseAnimation()
                             }
 
-                        Text(monitor.isStale ? "— BPM" : String(format: "%.0f", monitor.currentHeartRate) + " BPM")
+                        Text(shouldShowHeartRate ? String(format: "%.0f", monitor.currentHeartRate) + " BPM" : "— BPM")
                             .font(.system(size: 48, weight: .bold))
                             .accessibilityLabel("Current heart rate")
 
                         if monitor.isStale {
+                            // Show last update when stale
                             if let last = monitor.lastUpdate {
                                 Text("Last updated: \(timeAgoString(from: last))")
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
                         } else {
+                            // Show target range when connected
                             Text("Target range: \(monitor.minHeartRate)–\(monitor.maxHeartRate) BPM")
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
@@ -132,7 +144,7 @@ struct ContentView: View {
 
     private func updatePulseAnimation() {
         withAnimation {
-            pulseAnimation = monitor.isConnected && !monitor.isStale && !UIAccessibility.isReduceMotionEnabled
+            pulseAnimation = shouldAnimate && !UIAccessibility.isReduceMotionEnabled
         }
     }
 

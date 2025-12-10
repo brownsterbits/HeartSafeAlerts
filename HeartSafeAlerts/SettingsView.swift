@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var monitor: HeartRateMonitor
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         NavigationStack {
             Form {
@@ -24,7 +24,7 @@ struct SettingsView: View {
                         step: 5
                     )
                     .accessibilityLabel("Adjust minimum heart rate")
-                    
+
                     HStack {
                         Text("Maximum BPM")
                         Spacer()
@@ -41,36 +41,6 @@ struct SettingsView: View {
                         step: 5
                     )
                     .accessibilityLabel("Adjust maximum heart rate")
-                }
-
-                Section(header: Text("Data Source")) {
-                    Picker("Heart Rate Source", selection: $monitor.dataSource) {
-                        ForEach(HeartRateDataSource.allCases) { source in
-                            HStack {
-                                Image(systemName: source.icon)
-                                Text(source.rawValue)
-                            }
-                            .tag(source)
-                        }
-                    }
-                    .pickerStyle(.menu)
-
-                    if let activeSource = monitor.activeSource {
-                        HStack {
-                            Text("Active Source")
-                            Spacer()
-                            HStack {
-                                Image(systemName: activeSource.icon)
-                                    .foregroundColor(.green)
-                                Text(activeSource.rawValue)
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                    }
-
-                    Text(monitor.dataSource.description)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
 
                 Section(header: Text("Alerts")) {
@@ -97,7 +67,7 @@ struct SettingsView: View {
                             }
                     }
                 }
-                
+
                 Section(header: Text("Device Status")) {
                     HStack {
                         Text("Connection")
@@ -112,7 +82,7 @@ struct SettingsView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-                    
+
                     if monitor.isConnected {
                         HStack {
                             Text("Current Heart Rate")
@@ -125,7 +95,7 @@ struct SettingsView: View {
                                     .foregroundColor(.gray)
                             }
                         }
-                        
+
                         if let lastUpdate = monitor.lastUpdate {
                             HStack {
                                 Text("Last Update")
@@ -149,7 +119,7 @@ struct SettingsView: View {
                         Text(Constants.fullVersionString)
                             .foregroundColor(.gray)
                     }
-                    
+
                     HStack {
                         Text("Developer")
                         Spacer()
@@ -169,10 +139,10 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private func timeAgoString(from date: Date) -> String {
         let seconds = Int(Date().timeIntervalSince(date))
-        
+
         switch seconds {
         case 0..<60:
             return "\(seconds)s ago"
@@ -190,7 +160,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     private func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if !granted {
