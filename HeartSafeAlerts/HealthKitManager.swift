@@ -77,6 +77,9 @@ class HealthKitManager: NSObject, ObservableObject {
             return
         }
 
+        // Always stop existing monitoring before starting new to prevent query leaks
+        stopMonitoring()
+
         guard !isMonitoring else { return }
 
         guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate) else {

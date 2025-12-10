@@ -2,7 +2,6 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var monitor: HeartRateMonitor
-    @AppStorage(Constants.backgroundNotificationsEnabledKey) private var backgroundNotificationsEnabled = false
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -88,10 +87,10 @@ struct SettingsView: View {
                             .accessibilityLabel("Enable vibration alerts")
                             .padding(.leading, 20)
 
-                        Toggle("Background Notifications", isOn: $backgroundNotificationsEnabled)
+                        Toggle("Background Notifications", isOn: $monitor.backgroundNotificationsEnabled)
                             .accessibilityLabel("Enable background notifications")
                             .padding(.leading, 20)
-                            .onChange(of: backgroundNotificationsEnabled) { _, newValue in
+                            .onChange(of: monitor.backgroundNotificationsEnabled) { _, newValue in
                                 if newValue {
                                     requestNotificationPermission()
                                 }
@@ -196,9 +195,9 @@ struct SettingsView: View {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if !granted {
                 DispatchQueue.main.async {
-                    backgroundNotificationsEnabled = false
+                    self.monitor.backgroundNotificationsEnabled = false
                 }
-                
+
                 if let error = error {
                     print("Notification permission error: \(error)")
                 }

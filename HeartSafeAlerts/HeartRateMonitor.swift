@@ -55,6 +55,11 @@ class HeartRateMonitor: ObservableObject {
         set { alertManager.vibrationAlertsEnabled = newValue }
     }
 
+    var backgroundNotificationsEnabled: Bool {
+        get { alertManager.backgroundNotificationsEnabled }
+        set { alertManager.backgroundNotificationsEnabled = newValue }
+    }
+
     // MARK: - Private Properties
 
     private var cancellables = Set<AnyCancellable>()

@@ -1,52 +1,90 @@
 # Care Circle Implementation Plan
 
 **Last Updated:** 2025-12-08
-**Status:** Planning Phase
-**Target Version:** v2.1 (Care Circle MVP)
-**Estimated Timeline:** 6-8 weeks
+**Status:** Planning Phase - Refined
+**Target Version:** v3.0 (Care Circle MVP)
+**Estimated Timeline:** 4-6 weeks
 
 ---
 
 ## Executive Summary
 
-Care Circle is HeartSafeAlerts' premium subscription feature ($2.99/month or $19.99/year) that allows users to add trusted contacts who receive automatic alerts when heart rate issues occur. This is the core differentiator from Apple's built-in monitoring.
+Care Circle is HeartSafeAlerts' premium subscription feature ($2.99/month or $19.99/year) that allows users to add trusted contacts who receive automatic SMS alerts when heart rate issues occur. This is the core differentiator from Apple's built-in monitoring.
 
-**Core Philosophy: Zero Friction**
+### Core Philosophy
 
-The most critical design decision: **Circle members do NOT need to download the app.** They receive SMS alerts and can view status on a simple web page. This removes the biggest barrier to adoption.
+1. **Zero Friction** - Circle members do NOT need to download the app
+2. **Just Works** - Minimal configuration, sensible defaults
+3. **Ship Fast, Learn Fast** - Thin MVP first, iterate based on feedback
+
+### Business Model (Simplified)
+
+| Tier | Price | Features |
+|------|-------|----------|
+| Free | $0 | All monitoring features (Bluetooth, Apple Watch, alerts, thresholds) |
+| Care Circle | $2.99/mo or $19.99/yr | SMS escalation to trusted contacts |
+
+No "Pro" tier. Free is generous. Care Circle is the only premium feature.
 
 ---
 
-## User Journeys
+## MVP Strategy: Two-Phase Approach
+
+### v3.0a - "Outbound Only" (4 weeks) - SHIP THIS FIRST
+
+The core value proposition:
+> "If something's wrong and I don't respond, my loved one gets a text."
+
+| Include | Exclude (defer to v3.0b) |
+|---------|--------------------------|
+| Sign in with Apple | Inbound SMS acceptance flow (YES/STOP) |
+| StoreKit 2 subscription | Status web page |
+| Add up to 3 circle members | Weekly summaries |
+| Contact picker + phone/name storage | 5 member limit |
+| Outbound SMS alerts only | Rich member management |
+| 2-min escalation + "I'm Okay" / "I Need Help" | Alert history view |
+| Basic paywall | |
+
+**Members are "active" immediately when added** - no acceptance flow needed for MVP. They can reply STOP to any alert SMS to opt out (Twilio handles this automatically).
+
+### v3.0b - "Full Experience" (2-3 weeks after v3.0a feedback)
+
+- Inbound SMS acceptance flow (YES/STOP on invitation)
+- Status web page with random public token
+- Up to 5 members
+- Member status tracking (pending/active/declined)
+- Quiet hours (maybe)
+- Weekly summaries (maybe)
+
+---
+
+## User Journey (v3.0a MVP)
 
 ### Primary User (App Owner)
 
 ```
-1. User has free HeartSafeAlerts installed, monitoring works
+1. User has free HeartSafeAlerts, monitoring works great
 2. User sees Care Circle teaser in Settings
 3. User taps "Care Circle" → Subscription paywall
 4. User subscribes ($2.99/month or $19.99/year)
 5. User taps "Add to Circle" → Contact picker
-6. User selects mom's contact → Confirmation screen
-7. User confirms → SMS invitation sent to mom
-8. Mom replies YES → Mom is now in the circle
-9. Later: User's heart rate spikes
-10. Alert UI appears with 2-minute countdown
-11. User doesn't respond in time
-12. Mom receives SMS: "HeartSafe Alert: [Name]'s heart rate is high (142 BPM). Please check on them."
+6. User selects contact → Sees phone number + name
+7. User confirms → Member saved locally + Firestore
+8. (No SMS sent yet - member is immediately "active")
+9. Later: User's heart rate spikes, alert triggers
+10. AlertEscalationView appears with 2-minute countdown
+11. User doesn't respond in time (or taps "I Need Help")
+12. SMS sent: "HeartSafe Alert: Chad's heart rate is 142 BPM (high).
+    Please check on him. Call: (555) 123-4567"
 ```
 
 ### Circle Member (No App Required)
 
 ```
-1. Receives SMS: "[Name] added you to their HeartSafe Care Circle. Reply YES to accept."
-2. Replies YES
-3. Done - no app download, no account creation
-4. Later: Receives alert SMS with link to status page
-5. Taps link → Simple web page showing:
-   - Current alert status
-   - "I reached them" / "I couldn't reach them" buttons
-   - Phone number to call
+1. First contact: Receives alert SMS when something's wrong
+2. SMS includes owner's phone number to call
+3. Can reply STOP to any SMS to opt out (Twilio automatic)
+4. That's it - no app, no account, no web page (for MVP)
 ```
 
 ---
@@ -55,8 +93,9 @@ The most critical design decision: **Circle members do NOT need to download the 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        HeartSafeAlerts App                      │
+│                     HeartSafeAlerts App                         │
 ├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
 │  AlertManager.checkHeartRate()                                  │
 │       │                                                         │
 │       ▼                                                         │
@@ -64,20 +103,25 @@ The most critical design decision: **Circle members do NOT need to download the 
 │       │                                                         │
 │       ├──► Show AlertEscalationView (2-min countdown)          │
 │       │         │                                               │
-│       │         ├── [I'm Okay] → Cancel escalation             │
-│       │         └── [I Need Help] → Immediate escalation       │
+│       │         ├── [I'm Okay] → Cancel, notify circle "all ok" │
+│       │         │                                               │
+│       │         └── [I Need Help] → Confirm → Immediate SMS     │
+│       │                  │                                      │
+│       │                  └── (3-sec undo option)                │
 │       │                                                         │
-│       └──► (2 min timeout) → Escalate to Care Circle           │
-│                   │                                             │
-│                   ▼                                             │
-│            Firebase Cloud Function                              │
-│                   │                                             │
-│                   ▼                                             │
-│            Twilio SMS to all active circle members              │
-│                   │                                             │
-│                   ▼                                             │
-│            "HeartSafe Alert: [Name]'s HR is 142 BPM.           │
-│             Status: heartsafe.io/s/abc123"                      │
+│       └──► (2 min timeout, no response) → Send SMS to circle   │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  Firebase Cloud Function (sendAlertToCircle)                   │
+│       │                                                         │
+│       ▼                                                         │
+│  Twilio SMS to all circle members                              │
+│                                                                 │
+│  "HeartSafe Alert: Chad's HR is 142 BPM (high).                │
+│   Please check on him. Call: (555) 123-4567                    │
+│   Reply STOP to opt out."                                       │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -89,78 +133,102 @@ The most critical design decision: **Circle members do NOT need to download the 
 |-----------|------------|-----------|
 | Authentication | Sign in with Apple | No passwords, trusted, Apple requirement |
 | Database | Firebase Firestore | Real-time sync, scales automatically |
-| Cloud Functions | Firebase Functions | Serverless, integrates with Firestore |
-| SMS | Twilio | Reliable, good API, reasonable pricing |
+| Cloud Functions | Firebase Functions (TypeScript) | Serverless, integrates with Firestore |
+| SMS | Twilio | Reliable, handles STOP automatically, reasonable pricing |
 | Subscriptions | StoreKit 2 | Modern API, server-side validation |
-| Status Page | Firebase Hosting | Free tier generous, simple deployment |
+| Status Page | Firebase Hosting | v3.0b - deferred |
 
 ---
 
-## Data Model (Firestore)
+## Data Model (Firestore) - Nested Structure
+
+Nesting under users simplifies security rules dramatically.
 
 ```
 firestore/
-├── users/{userId}
-│   ├── appleUserId: string
-│   ├── displayName: string
-│   ├── email: string (optional, from Apple)
-│   ├── phone: string (for caller ID on alerts)
-│   ├── subscriptionStatus: "none" | "active" | "expired" | "grace_period"
-│   ├── subscriptionProductId: string
-│   ├── subscriptionExpiry: timestamp
-│   ├── createdAt: timestamp
-│   └── updatedAt: timestamp
-│
-├── circles/{circleId}
-│   ├── ownerId: string (userId)
-│   ├── ownerName: string (display name for SMS)
-│   ├── ownerPhone: string (for circle members to call back)
-│   ├── createdAt: timestamp
-│   └── memberCount: number (denormalized for queries)
-│
-├── members/{memberId}
-│   ├── circleId: string
-│   ├── phone: string (E.164 format: +15551234567)
-│   ├── name: string (from contacts)
-│   ├── status: "pending" | "active" | "declined" | "removed"
-│   ├── invitedAt: timestamp
-│   ├── acceptedAt: timestamp (optional)
-│   ├── declinedAt: timestamp (optional)
-│   └── lastAlertSentAt: timestamp (optional)
-│
-└── alerts/{alertId}
-    ├── circleId: string
-    ├── userId: string
-    ├── bpm: number
-    ├── alertType: "high" | "low"
-    ├── thresholdValue: number (the threshold that was exceeded)
-    ├── triggeredAt: timestamp
-    ├── status: "pending" | "acknowledged" | "escalated" | "resolved"
-    ├── acknowledgedAt: timestamp (optional)
-    ├── acknowledgedWith: "im_okay" | "need_help" (optional)
-    ├── escalatedAt: timestamp (optional)
-    ├── resolvedAt: timestamp (optional)
-    ├── resolvedBy: "user" | "circle_member" | "timeout"
-    └── notifiedMembers: [string] (member IDs who were notified)
+└── users/{userId}
+    ├── appleUserId: string
+    ├── displayName: string
+    ├── email: string (optional, from Apple)
+    ├── phone: string (required for Care Circle - callback number)
+    ├── subscriptionStatus: "none" | "active" | "expired" | "grace_period"
+    ├── subscriptionProductId: string
+    ├── subscriptionExpiry: timestamp
+    ├── createdAt: timestamp
+    ├── updatedAt: timestamp
+    │
+    ├── circle/ (subcollection)
+    │   └── members/{memberId}
+    │       ├── phone: string (E.164 format: +15551234567)
+    │       ├── name: string (from contacts)
+    │       ├── addedAt: timestamp
+    │       └── lastAlertSentAt: timestamp (optional)
+    │
+    └── alerts/{alertId} (subcollection)
+        ├── bpm: number
+        ├── alertType: "high" | "low"
+        ├── thresholdValue: number
+        ├── triggeredAt: timestamp
+        ├── status: "pending" | "acknowledged" | "escalated" | "resolved"
+        ├── acknowledgedAt: timestamp (optional)
+        ├── acknowledgedWith: "im_okay" | "need_help" (optional)
+        ├── escalatedAt: timestamp (optional)
+        ├── resolvedAt: timestamp (optional)
+        ├── resolvedBy: "user" | "timeout" | "hr_normalized"
+        ├── notifiedPhones: [string] (phones that received SMS)
+        └── publicToken: string (random, for v3.0b status page)
 ```
+
+---
+
+## Security Rules (Firestore) - Simplified with Nesting
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can only access their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Circle members - user owns all their members
+      match /circle/members/{memberId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Alerts - user owns all their alerts
+      match /alerts/{alertId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}
+```
+
+Much simpler than the original flat structure - no `get()` calls needed.
 
 ---
 
 ## Implementation Phases
 
-### Phase 1: Backend Foundation (Week 1-2)
+### Phase 1: Foundation (Week 1-2)
 
-**Goal:** Firebase project setup, authentication, subscription infrastructure
+**Goal:** Firebase + Auth + Subscription infrastructure
 
 #### Tasks
 
 - [ ] Create Firebase project: `heartsafe-alerts`
+- [ ] Add Firebase SDK via Swift Package Manager
 - [ ] Enable Authentication with Sign in with Apple
-- [ ] Configure Firestore database with security rules
+- [ ] Configure Firestore with nested data model
+- [ ] Deploy security rules
 - [ ] Set up Firebase Functions project (TypeScript)
-- [ ] Create Twilio account and configure SMS
-- [ ] Implement StoreKit 2 subscription manager
-- [ ] Create StoreKit configuration file for testing
+- [ ] Create Twilio account, get phone number
+- [ ] Implement `SubscriptionManager.swift` (StoreKit 2)
+- [ ] Create `Configuration.storekit` for testing
+- [ ] Implement `FirebaseManager.swift` (Auth + Firestore)
+- [ ] Add feature flag: `FeatureFlags.careCircleEnabled`
 
 #### Files to Create
 
@@ -169,15 +237,18 @@ HeartSafeAlerts/
 ├── Managers/
 │   ├── FirebaseManager.swift      # Auth + Firestore wrapper
 │   └── SubscriptionManager.swift  # StoreKit 2 implementation
-├── GoogleService-Info.plist       # Firebase configuration
-└── Configuration.storekit         # StoreKit testing config
+├── Utilities/
+│   └── FeatureFlags.swift         # Feature flag enum
+├── GoogleService-Info.plist       # Firebase config (from console)
+└── Configuration.storekit         # StoreKit testing
 
 firebase-functions/
 ├── src/
 │   ├── index.ts                   # Function exports
-│   └── subscriptions.ts           # App Store webhook handler
+│   └── config.ts                  # Twilio credentials (from env)
 ├── package.json
-└── tsconfig.json
+├── tsconfig.json
+└── .env.example                   # Environment template
 ```
 
 #### Subscription Products
@@ -187,122 +258,143 @@ firebase-functions/
 | `com.brownster.HeartSafeAlerts.carecircle.monthly` | $2.99/month | Care Circle Monthly |
 | `com.brownster.HeartSafeAlerts.carecircle.annual` | $19.99/year | Care Circle Annual (save 44%) |
 
-#### Security Rules (Firestore)
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Users can only read/write their own document
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // Circles: owner can read/write
-    match /circles/{circleId} {
-      allow read, write: if request.auth != null &&
-        resource.data.ownerId == request.auth.uid;
-      allow create: if request.auth != null;
-    }
-
-    // Members: circle owner can manage
-    match /members/{memberId} {
-      allow read, write: if request.auth != null &&
-        get(/databases/$(database)/documents/circles/$(resource.data.circleId)).data.ownerId == request.auth.uid;
-    }
-
-    // Alerts: circle owner can read/write, cloud functions can write
-    match /alerts/{alertId} {
-      allow read: if request.auth != null &&
-        resource.data.userId == request.auth.uid;
-      allow write: if request.auth != null &&
-        resource.data.userId == request.auth.uid;
-    }
-  }
-}
-```
-
 ---
 
-### Phase 2: Circle Member Management (Week 3-4)
+### Phase 2: Circle Management + Escalation (Week 3-4)
 
-**Goal:** Add/remove circle members with SMS invitations
+**Goal:** Add members, build escalation UI, send SMS alerts
 
 #### Tasks
 
-- [ ] Create CareCircleManager for member CRUD operations
-- [ ] Build CareCircleView (main circle management screen)
-- [ ] Build AddMemberView with native contact picker
-- [ ] Implement invitation Cloud Function (Twilio SMS)
-- [ ] Implement webhook for inbound SMS replies
-- [ ] Handle member acceptance/decline flow
-- [ ] Build MemberRowView for member list display
+- [ ] Create `CareCircleManager.swift` for member CRUD
+- [ ] Build `CareCircleView.swift` (main screen)
+- [ ] Build `AddMemberView.swift` with contact picker
+- [ ] Build `MemberRowView.swift` for list display
+- [ ] Build `CareCirclePaywallView.swift`
+- [ ] Create `EscalationManager.swift` (timer + state)
+- [ ] Build `AlertEscalationView.swift` (full-screen alert)
+- [ ] Add "I Need Help" confirmation (3-sec undo)
+- [ ] Hook escalation into `AlertManager.checkHeartRate()`
+- [ ] Implement `sendAlertToCircle` Cloud Function (Twilio)
+- [ ] Add escalation cooldown (no SMS spam)
+- [ ] Add auto-cancel if HR normalizes during countdown
+- [ ] Add "Not 911" disclaimer to UI
 
 #### Files to Create
 
 ```
 HeartSafeAlerts/
 ├── Managers/
-│   └── CareCircleManager.swift    # Member CRUD, invitation logic
+│   ├── CareCircleManager.swift    # Member CRUD
+│   └── EscalationManager.swift    # Timer, escalation logic
 ├── Views/CareCircle/
-│   ├── CareCircleView.swift       # Main circle management
-│   ├── AddMemberView.swift        # Contact picker + confirmation
-│   ├── MemberRowView.swift        # Individual member display
+│   ├── CareCircleView.swift       # Main circle screen
+│   ├── AddMemberView.swift        # Contact picker
+│   ├── MemberRowView.swift        # Member list item
+│   ├── AlertEscalationView.swift  # Full-screen alert
 │   └── CareCirclePaywallView.swift # Subscription paywall
 └── Models/
-    └── CircleMember.swift         # Member data model
+    ├── CircleMember.swift         # Member model
+    └── AlertEvent.swift           # Alert model
 
 firebase-functions/
 └── src/
-    └── invitations.ts             # sendInviteSMS, processReply
+    └── alerts.ts                  # sendAlertToCircle
 ```
 
 #### SMS Templates
 
-**Invitation (Outbound):**
+**Alert Escalation (no response after 2 min):**
 ```
-Hi! [OwnerName] added you to their HeartSafe Care Circle.
-You'll get text alerts if their heart rate needs attention.
+HeartSafe Alert: [Name]'s heart rate is [BPM] BPM ([high/low]).
+They haven't responded. Please check on them.
 
-Reply YES to accept or STOP to decline.
-```
-
-**Acceptance Confirmation (Outbound):**
-```
-You're now in [OwnerName]'s Care Circle. You'll receive
-alerts if their heart rate goes outside their target range.
-
-Reply STOP anytime to leave the circle.
+Call: [Phone]
+Reply STOP to opt out.
 ```
 
-**Decline Confirmation (Outbound):**
+**Urgent (user pressed "I Need Help"):**
 ```
-Got it. You won't receive alerts from [OwnerName]'s Care Circle.
+URGENT: [Name] pressed "I Need Help" in HeartSafe.
+Heart rate: [BPM] BPM
+
+Call immediately: [Phone]
+Reply STOP to opt out.
 ```
 
-#### UI Mockups
+**All Clear (user pressed "I'm Okay"):**
+```
+HeartSafe: [Name] responded "I'm okay" to their heart rate alert.
+No action needed.
+```
 
-**Circle Management Screen:**
+#### Escalation Logic
+
+| Event | Action |
+|-------|--------|
+| HR out of range | Show AlertEscalationView, start 2-min timer |
+| User taps "I'm Okay" | Cancel timer, SMS "all clear" to circle |
+| User taps "I Need Help" | Show 3-sec undo, then immediate SMS |
+| Timer expires (2 min) | SMS to circle |
+| HR normalizes during countdown | Auto-cancel, show "HR back to normal" |
+| Second alert within 10 min | Don't re-escalate (cooldown) |
+
+---
+
+### Phase 3: Polish & Ship (Week 5-6)
+
+**Goal:** TestFlight, edge cases, App Store submission
+
+#### Tasks
+
+- [ ] Implement subscription restore flow
+- [ ] Handle subscription expiry gracefully (disable Care Circle, keep members)
+- [ ] Add "Manage Subscription" link
+- [ ] Graceful degradation if Firebase/Twilio fails
+- [ ] Update Privacy Policy (data collection disclosure)
+- [ ] Update Terms of Service (subscription terms)
+- [ ] Add "Not a medical device / Not 911" disclaimers throughout
+- [ ] TestFlight beta testing
+- [ ] Fix bugs from testing
+- [ ] App Store submission (v3.0)
+
+#### Disclaimer Text (use consistently)
+
+```
+Care Circle is not a substitute for emergency services.
+If you believe you're experiencing a medical emergency, call 911.
+```
+
+Place in:
+- AlertEscalationView (near "I Need Help" button)
+- CareCircleView (footer)
+- Settings → About
+- App Store description
+
+---
+
+## UI Mockups
+
+### Care Circle Management (v3.0a - simplified)
+
 ```
 ┌─────────────────────────────────────────┐
-│  ←  Care Circle                    ⚙️   │
+│  ←  Care Circle                         │
 ├─────────────────────────────────────────┤
 │                                         │
 │  Your circle members receive text       │
 │  alerts when your heart rate needs      │
-│  attention.                             │
+│  attention and you don't respond.       │
 │                                         │
 │  ─────────────────────────────────────  │
 │                                         │
-│  👤 Sara Johnson              ✓ Active  │
+│  👤 Sara Johnson                        │
 │     +1 (555) 123-4567                   │
-│     Added Jan 15, 2025                  │
-│                                    [⋮]  │
+│                              [Remove]   │
 │                                         │
-│  👤 Mike Brown               ⏳ Pending │
+│  👤 Mike Brown                          │
 │     +1 (555) 987-6543                   │
-│     Invited Jan 16, 2025               │
-│                         [Resend] [⋮]    │
+│                              [Remove]   │
 │                                         │
 │  ─────────────────────────────────────  │
 │                                         │
@@ -310,89 +402,17 @@ Got it. You won't receive alerts from [OwnerName]'s Care Circle.
 │  │     + Add Circle Member         │    │
 │  └─────────────────────────────────┘    │
 │                                         │
-│  2 of 5 members                         │
+│  2 of 3 members                         │
+│                                         │
+│  ─────────────────────────────────────  │
+│  ⚠️ Care Circle is not a substitute     │
+│  for emergency services. If you're      │
+│  having an emergency, call 911.         │
 │                                         │
 └─────────────────────────────────────────┘
 ```
 
----
-
-### Phase 3: Alert Escalation System (Week 5-6)
-
-**Goal:** When alerts fire, give user time to respond, then notify circle
-
-#### Tasks
-
-- [ ] Create EscalationManager for timer and state management
-- [ ] Build AlertEscalationView (full-screen alert UI)
-- [ ] Hook EscalationManager into AlertManager.checkHeartRate()
-- [ ] Implement "I'm Okay" flow (cancel escalation, notify circle)
-- [ ] Implement "I Need Help" flow (immediate escalation)
-- [ ] Implement timeout escalation (2 minutes, no response)
-- [ ] Create sendAlertToCircle Cloud Function
-- [ ] Build status web page for circle members
-
-#### Files to Create
-
-```
-HeartSafeAlerts/
-├── Managers/
-│   └── EscalationManager.swift    # Timer, Firebase sync, escalation logic
-├── Views/CareCircle/
-│   └── AlertEscalationView.swift  # Full-screen alert with countdown
-└── Models/
-    └── AlertEvent.swift           # Alert history model
-
-firebase-functions/
-└── src/
-    └── alerts.ts                  # sendAlertToCircle
-
-heartsafe-status/ (Firebase Hosting)
-├── index.html                     # Landing page
-├── status.html                    # Dynamic status page
-├── css/
-│   └── style.css
-└── js/
-    └── status.js                  # Firestore listener for real-time updates
-```
-
-#### Escalation Timing
-
-| Event | Time | Action |
-|-------|------|--------|
-| Heart rate alert triggered | 0:00 | Show AlertEscalationView, start 2-min timer |
-| User taps "I'm Okay" | Any | Cancel timer, update Firestore, SMS circle "All clear" |
-| User taps "I Need Help" | Any | Immediate escalation, SMS circle "URGENT" |
-| Timer expires | 2:00 | Escalate, SMS circle with concern |
-| No further alerts | 30:00 | Auto-resolve if heart rate normalized |
-
-#### Alert SMS Templates
-
-**Standard Escalation (no response after 2 min):**
-```
-HeartSafe Alert: [OwnerName]'s heart rate is [BPM] BPM ([high/low]).
-They haven't responded. Please check on them.
-
-Call: [OwnerPhone]
-Status: heartsafe.io/s/[alertId]
-```
-
-**Urgent Escalation (user pressed "I Need Help"):**
-```
-URGENT HeartSafe Alert: [OwnerName] pressed "I Need Help"
-Heart rate: [BPM] BPM
-
-Call immediately: [OwnerPhone]
-Status: heartsafe.io/s/[alertId]
-```
-
-**All Clear (user pressed "I'm Okay"):**
-```
-HeartSafe Update: [OwnerName] responded "I'm okay"
-to their heart rate alert. No action needed.
-```
-
-#### Alert Escalation UI
+### Alert Escalation View
 
 ```
 ┌─────────────────────────────────────────┐
@@ -425,65 +445,13 @@ to their heart rate alert. No action needed.
 │  │                                 │    │
 │  └─────────────────────────────────┘    │
 │                                         │
+│  ⚠️ This is not 911. If you're having   │
+│  an emergency, call emergency services. │
 │                                         │
 └─────────────────────────────────────────┘
 ```
 
-#### Status Web Page
-
-**URL:** `heartsafe.io/s/{alertId}`
-
-```html
-┌─────────────────────────────────────────┐
-│         HeartSafe Alert Status          │
-├─────────────────────────────────────────┤
-│                                         │
-│  👤 Mom                                 │
-│                                         │
-│  ❤️ Heart rate: 142 BPM                 │
-│     Status: HIGH (above 100 BPM)        │
-│                                         │
-│  🕐 Alert: 3 minutes ago                │
-│                                         │
-│  ─────────────────────────────────────  │
-│                                         │
-│  Current Status:                        │
-│  ⚠️ AWAITING RESPONSE                   │
-│                                         │
-│  ─────────────────────────────────────  │
-│                                         │
-│  📞 Call Mom: +1 (555) 123-4567         │
-│                                         │
-│  ─────────────────────────────────────  │
-│                                         │
-│  Update status:                         │
-│                                         │
-│  [I reached them - they're OK]          │
-│                                         │
-│  [I couldn't reach them]                │
-│                                         │
-└─────────────────────────────────────────┘
-```
-
----
-
-### Phase 4: Subscription Paywall & Polish (Week 7-8)
-
-**Goal:** Convert free users to premium, polish the experience
-
-#### Tasks
-
-- [ ] Build CareCirclePaywallView with both pricing options
-- [ ] Implement paywall trigger points (Settings, Add Member)
-- [ ] Add subscription status to Settings UI
-- [ ] Implement restore purchases flow
-- [ ] Add "Manage Subscription" link to Apple settings
-- [ ] Handle subscription expiry gracefully
-- [ ] Add alert history view (optional, time permitting)
-- [ ] TestFlight testing with real users
-- [ ] App Store submission preparation
-
-#### Paywall Design
+### Paywall
 
 ```
 ┌─────────────────────────────────────────┐
@@ -497,13 +465,11 @@ to their heart rate alert. No action needed.
 │                                         │
 │  ─────────────────────────────────────  │
 │                                         │
-│  ✓ Add up to 5 trusted contacts         │
+│  ✓ Add up to 3 trusted contacts         │
 │                                         │
 │  ✓ Automatic SMS alert escalation       │
 │                                         │
 │  ✓ "I'm okay" check-in workflow         │
-│                                         │
-│  ✓ Real-time status page for family     │
 │                                         │
 │  ─────────────────────────────────────  │
 │                                         │
@@ -520,8 +486,7 @@ to their heart rate alert. No action needed.
 │                                         │
 │  [Restore Purchases]                    │
 │                                         │
-│  Subscriptions are billed through       │
-│  Apple and can be cancelled anytime     │
+│  Billed through Apple. Cancel anytime   │
 │  in Settings → Subscriptions.           │
 │                                         │
 └─────────────────────────────────────────┘
@@ -531,62 +496,106 @@ to their heart rate alert. No action needed.
 
 ## Cost Estimates
 
-| Service | Free Tier | Estimated Monthly Cost (1,000 users) |
-|---------|-----------|-------------------------------------|
-| Firebase Authentication | 50K MAU | $0 |
-| Firebase Firestore | 1GB storage, 50K reads/day | ~$5-10 |
-| Firebase Functions | 2M invocations/month | ~$0-5 |
-| Firebase Hosting | 10GB/month | $0 |
-| Twilio SMS | - | ~$25-50 (@ $0.0079/SMS, ~5 SMS/user/mo) |
-| **Total** | - | **~$30-65/month** |
+| Service | Free Tier | Est. Monthly Cost (1,000 users) |
+|---------|-----------|--------------------------------|
+| Firebase Auth | 50K MAU | $0 |
+| Firebase Firestore | 1GB, 50K reads/day | ~$5-10 |
+| Firebase Functions | 2M invocations | ~$0-5 |
+| Twilio SMS | - | ~$20-40 (@ $0.0079/SMS) |
+| **Total** | - | **~$25-55/month** |
 
-**Break-even:** ~22 premium subscribers at $2.99/month
+**Break-even:** ~17-22 premium subscribers at $2.99/month
 
 ---
 
 ## Risk Mitigation
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| SMS costs spike from alert spam | Medium | High | Rate limit: max 10 escalations/day per user |
-| Twilio delivery failures | Low | High | Retry logic, show delivery status in app |
-| Circle member annoyed by alerts | Medium | Medium | Easy opt-out (reply STOP), quiet hours |
-| User forgets to dismiss alerts | High | Low | Auto-resolve after 30 min if HR normalized |
-| Subscription churn | Medium | Medium | Annual discount (44%), valuable feature |
-| Apple rejects subscription | Low | High | Follow guidelines, clear value proposition |
+| Risk | Mitigation |
+|------|------------|
+| SMS costs spike | Rate limit: max 10 escalations/day, 10-min cooldown between alerts |
+| Twilio delivery fails | Retry logic, log failures, show user "SMS may not have sent" |
+| Accidental "I Need Help" | 3-second undo snackbar before sending |
+| Circle member annoyed | STOP in every SMS (Twilio handles automatically) |
+| HR normalizes during countdown | Auto-cancel escalation, notify user |
+| Firebase offline | Graceful degradation - local alerts still work |
+| Apple rejects | Clear disclaimers, follow guidelines, no medical claims |
+
+---
+
+## Feature Flags
+
+```swift
+enum FeatureFlags {
+    /// Enable/disable Care Circle feature entirely
+    static let careCircleEnabled = true
+
+    /// Maximum circle members (increase in v3.0b)
+    static let maxCircleMembers = 3
+
+    /// Escalation countdown duration in seconds
+    static let escalationCountdown: TimeInterval = 120
+
+    /// Cooldown between escalations (prevent spam)
+    static let escalationCooldown: TimeInterval = 600 // 10 minutes
+}
+```
+
+---
+
+## SMS Compliance Notes
+
+1. **Every SMS includes "Reply STOP to opt out"** - Twilio handles opt-out automatically
+2. **Flexible reply matching** - Handle `yes`, `Yes`, `Y`, `OK` (for v3.0b acceptance flow)
+3. **A2P 10DLC** - May need brand registration for US SMS at scale; Twilio toll-free works initially
+4. **HELP response** - Consider adding in v3.0b
+
+---
+
+## Open Questions (Resolved)
+
+| Question | Decision |
+|----------|----------|
+| Phone number required? | Yes - required for Care Circle setup (callback number) |
+| Quiet hours? | Defer to v3.1 |
+| Weekly summaries? | Defer to v3.1 |
+| Multiple circles? | Yes - a person can be in multiple people's circles |
+| International SMS? | Yes - Twilio handles, costs more |
+| Invitation acceptance flow? | Defer to v3.0b - MVP has immediate activation |
+| Status web page? | Defer to v3.0b |
 
 ---
 
 ## Success Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Free → Premium conversion | 5-10% | (Premium users / Total users) |
-| Circle member acceptance rate | 70%+ | (Accepted / Invited) |
-| Alert acknowledgment < 2 min | 80%+ | (Acknowledged / Total alerts) |
-| 90-day subscriber retention | 70%+ | Cohort analysis |
-| Refund rate | <3% | App Store Connect |
-| App Store rating | 4.5+ | Maintain or improve |
+| Metric | Target |
+|--------|--------|
+| Free → Premium conversion | 5-10% |
+| Alert acknowledgment < 2 min | 80%+ |
+| 90-day subscriber retention | 70%+ |
+| Refund rate | <3% |
+| App Store rating | Maintain 4.5+ |
 
 ---
 
 ## Testing Plan
 
 ### Unit Tests
-- [ ] SubscriptionManager purchase flow
+- [ ] SubscriptionManager purchase/restore flow
 - [ ] CareCircleManager member CRUD
-- [ ] EscalationManager timer logic
-- [ ] Alert status state machine
+- [ ] EscalationManager timer and state transitions
+- [ ] Feature flag behavior
 
 ### Integration Tests
 - [ ] Sign in with Apple → Firestore user creation
-- [ ] Add member → SMS sent → Reply processed → Member active
-- [ ] Alert triggered → Timer → Escalation → SMS sent
+- [ ] Add member → Firestore write
+- [ ] Alert → Timer → Escalation → Cloud Function → SMS
 
 ### Manual Testing (TestFlight)
 - [ ] Full flow: Subscribe → Add member → Trigger alert → Escalate
 - [ ] Edge cases: Airplane mode, app killed, subscription expired
-- [ ] Circle member experience: SMS clarity, status page usability
+- [ ] "I Need Help" with undo
+- [ ] HR normalizes during countdown
+- [ ] Circle member receives SMS, can call back
 
 ### Device Testing
 - [ ] iPhone SE (smallest screen)
@@ -597,25 +606,11 @@ to their heart rate alert. No action needed.
 
 ---
 
-## Open Questions
-
-1. **Phone number for user:** Do we require the user to provide their phone number so circle members can call them back? (Recommendation: Yes, required for Care Circle setup)
-
-2. **Quiet hours:** Should circle members be able to set quiet hours (no alerts 11pm-7am)? (Recommendation: v2.2 feature, not MVP)
-
-3. **Weekly summaries:** Include in MVP or defer? (Recommendation: Defer to v2.2)
-
-4. **Multiple circles:** Can a user be in multiple people's circles? (Recommendation: Yes, no limit for circle members)
-
-5. **International SMS:** Support international phone numbers? (Recommendation: Yes, Twilio handles this, just costs more)
-
----
-
 ## Dependencies
 
-### External Services (Need Accounts)
-- [ ] Firebase project (free tier)
-- [ ] Twilio account (pay-as-you-go)
+### External Services
+- [ ] Firebase project (free tier) - create at console.firebase.google.com
+- [ ] Twilio account (pay-as-you-go) - get phone number
 - [ ] Apple Developer (already have)
 
 ### App Store Requirements
@@ -628,49 +623,48 @@ to their heart rate alert. No action needed.
 
 ## File Summary
 
-### New Swift Files
+### New Swift Files (v3.0a)
 
 | File | Purpose |
 |------|---------|
-| `FirebaseManager.swift` | Authentication and Firestore operations |
-| `SubscriptionManager.swift` | StoreKit 2 subscription handling |
-| `CareCircleManager.swift` | Circle member CRUD and invitations |
-| `EscalationManager.swift` | Alert escalation timer and logic |
-| `CareCircleView.swift` | Main circle management screen |
-| `AddMemberView.swift` | Contact picker and confirmation |
+| `FeatureFlags.swift` | Feature flags and constants |
+| `FirebaseManager.swift` | Auth + Firestore operations |
+| `SubscriptionManager.swift` | StoreKit 2 subscriptions |
+| `CareCircleManager.swift` | Circle member CRUD |
+| `EscalationManager.swift` | Alert escalation timer/logic |
+| `CareCircleView.swift` | Main circle management |
+| `AddMemberView.swift` | Contact picker + confirmation |
 | `MemberRowView.swift` | Circle member list item |
 | `AlertEscalationView.swift` | Full-screen alert with countdown |
-| `CareCirclePaywallView.swift` | Subscription purchase screen |
-| `CircleMember.swift` | Circle member data model |
+| `CareCirclePaywallView.swift` | Subscription paywall |
+| `CircleMember.swift` | Member data model |
 | `AlertEvent.swift` | Alert event data model |
 
-### Firebase Cloud Functions
+### Firebase Cloud Functions (v3.0a)
 
 | Function | Trigger | Purpose |
 |----------|---------|---------|
-| `sendInviteSMS` | Firestore onCreate (members) | Send SMS invitation via Twilio |
-| `processInviteReply` | HTTP (Twilio webhook) | Handle YES/STOP replies |
-| `sendAlertToCircle` | Firestore onCreate (alerts with status=escalated) | Send alert SMS to all members |
-| `handleSubscriptionWebhook` | HTTP (App Store) | Process subscription events |
+| `sendAlertToCircle` | HTTP (called from app) | Send SMS via Twilio |
 
-### Web Files (Firebase Hosting)
+### Deferred to v3.0b
 
-| File | Purpose |
-|------|---------|
-| `index.html` | Landing page |
-| `status.html` | Alert status page (dynamic) |
-| `js/status.js` | Firestore real-time listener |
-| `css/style.css` | Styling |
+| Component | Notes |
+|-----------|-------|
+| `processInviteReply` function | Inbound SMS webhook |
+| `sendInviteSMS` function | Invitation SMS |
+| Status web page | Firebase Hosting |
+| Member acceptance flow | YES/STOP handling |
 
 ---
 
 ## Next Steps
 
-1. Review this plan and identify any concerns or modifications
+1. ✅ Review and refine this plan
 2. Set up Firebase project and Twilio account
-3. Begin Phase 1 implementation (backend foundation)
+3. Begin Phase 1 implementation
 
 ---
 
 **Document Owner:** Chad Brown
 **Last Review:** 2025-12-08
+**Version:** 3.0 Planning

@@ -120,9 +120,14 @@ class AlertManager: ObservableObject {
         }
 
         if vibrationAlertsEnabled {
-            let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
-            impactFeedback.prepare()
-            impactFeedback.impactOccurred()
+            // Use system vibration for a longer, more noticeable alert
+            // kSystemSoundID_Vibrate (4095) produces a ~400ms vibration
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+
+            // Add a second vibration after a short delay for emphasis
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            }
         }
     }
 
@@ -139,6 +144,7 @@ class AlertManager: ObservableObject {
         content.sound = .default
         content.categoryIdentifier = Constants.notificationCategoryIdentifier
 
+        // Use UUID for unique notifications - cooldown prevents pile-up
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,
